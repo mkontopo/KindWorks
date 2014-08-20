@@ -13,7 +13,7 @@ public class DetailState implements State {
   //inherited methods
   public void display() {
 
-    detailBox.run();
+    detailBox.run(p.getX(), p.getY()+35);
   }
 
   //inherited methods
@@ -69,6 +69,8 @@ public class DetailState implements State {
     }
 
     public void run() {
+      x = p.getX();
+      y = p.getY()+35;
       textFont(Anglecia);
 
       fill(#FFAC74);
@@ -91,10 +93,16 @@ public class DetailState implements State {
 
 
 
-      closeButton.display();
+      closeButton.display(x,y);
       closeButton.textHighlight();
-      viewSeenUsersButton.display();
+      viewSeenUsersButton.display(x+gutter, y+imgHeight+textBoxHeight+(gutter*3));
       viewSeenUsersButton.textHighlight();
+    }
+    
+    public void run(float dx, float dy){
+        this.x = dx;
+        this.y = dy;
+        run();
     }
   }
   //----------------------

@@ -48,6 +48,11 @@ public class Button {
     if (img != null)
       image(img, x, y);
   }
+  public void display(float dx, float dy) {
+    this.x = dx;
+    this.y = dy;
+    display();
+  }
 
   public void boxHighlight() {
     if (this.isOver(mouseX, mouseY)) { 
@@ -56,15 +61,21 @@ public class Button {
   }
   public void fillHighlight() {
     col = (this.isOver(mouseX, mouseY)) ?  color(50) : originalCol;
+    
+    if(active)
+      col = color(50);
+    else
+      col = color(255, 0);
+    
   }
-  
+
   public void underlineHighlight(float len) {
     if (this.isOver(mouseX, mouseY)) {
       stroke(txtCol);
       line(x+10, y+(textSize*2), x+10+len, y+(textSize*2));
     }
   }
-  
+
   public void textHighlight() {
     if (this.isOver(mouseX, mouseY)) { 
       alpha = 255;
@@ -80,7 +91,10 @@ public class Button {
   public void toggleActive() {
     active = !active;
   }
-  
+  public boolean isActive(){
+     return active; 
+  }
+
   public void drawHighlightBox() {
     noFill();
     stroke(txtCol);

@@ -22,7 +22,7 @@ public class PotentialVisibilityState implements State {
     if (p.containsState("SeenUsersState")) {
       ypos = p.getSeenUsersState().getTreePixelHeight()-(dia/2);
     }
-    else ypos = p.y - 40;
+    else ypos = p.getY()-80;
 
     tint(p.getColor());
     image(temp_tree, p.getX()+30-(dia/2), ypos, dia, dia);

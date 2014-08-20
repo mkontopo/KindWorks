@@ -15,32 +15,47 @@ public class BottomMenu implements Menu {
   public void display() {
 
     showAllSeen.display();
-    showAllSeen.drawHighlightBox();
     showAllSeen.fillHighlight();
+    showAllSeen.drawHighlightBox();
 
     showAllPotential.display();
-    showAllPotential.drawHighlightBox();
     showAllPotential.fillHighlight();
+    showAllPotential.drawHighlightBox();
   }
 
   public void handleClick(float x, float y) {
 
     if (showAllSeen.isOver(x, y)) {
-
       //Now go through every Person based on the people list you got passed in
       for (Person p : people) {
-        if (p.containsState("IdleState"))
-          p.addState( "SeenUsersState", p.getSeenUsersState() );
+        if (p.containsState("IdleState")) {
+          if (!showAllSeen.isActive()) {
+            p.addState( "SeenUsersState", p.getSeenUsersState() );
+          }
+          else {
+            p.removeState( "SeenUsersState" );
+          }
+        }
       }
+      showAllSeen.toggleActive();
     }
     if (showAllPotential.isOver(x, y)) {
 
       //Now go through every Person based on the people list you got passed in
+
       for (Person p : people) {
+
         //If it's not already in the list
-        if (p.containsState("IdleState"))
-          p.addState( "PotentialVisiblityState", p.getPotentialVisibilityState() );
+        if (p.containsState("IdleState")) {
+          if (!showAllPotential.isActive()) {
+            p.addState( "PotentialVisiblityState", p.getPotentialVisibilityState() );
+          } 
+          else {
+            p.removeState("PotentialVisiblityState");
+          }
+        }
       }
+      showAllPotential.toggleActive();
     }
   }
   public int getSelection() {

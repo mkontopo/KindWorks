@@ -4,6 +4,7 @@ public class ConceptOne implements Context {
   ArrayList<Person> people;
   Menu topMenu, bottomMenu;
   PImage legend;
+  PImage map;
 
   public ConceptOne(VisManager vm) {
     this.vm = vm;
@@ -19,6 +20,7 @@ public class ConceptOne implements Context {
     int[] ypos = new int[3];
     int gutter = 200;
     legend = loadImage("key.jpg");
+    map = loadImage("usa.png");
 
     //TODO: Fix this weird loading bug
     for (int i=0; i<41; i++) {
@@ -31,17 +33,22 @@ public class ConceptOne implements Context {
 
   public void display() {
     background(#40a4a3);
-    
+
     fill(#f1f2f2);
     int rs = 100;
-    rect(rs,rs, width-(2*rs), height-(2*rs));
-    
+    rect(rs, rs, width-(2*rs), height-(2*rs));
+
+//    if (topMenu.getSelection() != 0) {
+//      tint(255);
+//      image(map, rs, rs, width-(2*rs), height-(2*rs));
+//    }
+
     textFont(Anglecia);
     text("KINDWORKS", width/2-(textWidth("KINDWORKS")/2), 75);
-    
+
     tint(255);
-    image(legend, rs,20);
-    
+    image(legend, rs, 20);
+
     fill(#40a4a3);
     text(deeds[topMenu.getSelection()], width/2-(textWidth(deeds[topMenu.getSelection()])/2), 120);
 
@@ -67,7 +74,7 @@ public class ConceptOne implements Context {
 
         if (p.visibleStates.size() > 1)
           p.visibleStates.clear();
-          //p.clearAllStates();
+        //p.clearAllStates();
       }
     }
   }

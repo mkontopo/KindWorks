@@ -7,13 +7,15 @@ public class IdleState implements State {
   public IdleState(Person p) {
     this.p = p;
 
+    //TODO: The buttons have to be updated with the most current position of the Person object...
+    
     nameButton = new Button(p.getX(), p.getY(), textWidth(p.getName()), 15, color(255, 0), p.getColor(), "");
   }
 
   public void display() {
     textFont(Anglecia);
 
-    nameButton.display();
+    nameButton.display(p.getX(), p.getY());
     nameButton.boxHighlight();
 
     fill(p.getColor());

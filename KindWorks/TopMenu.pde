@@ -27,13 +27,14 @@ public class TopMenu implements Menu {
   }
   public void handleClick(float x, float y) {
     if (showAll.isOver(x, y)) {
+      deedSelection = 0;
       for (Person p : people) {
         p.visibleStates.clear();
         
         if (!p.containsState("IdleState")){
           p.addState( "IdleState", p.getIdleState() );
-        }
-          
+          p.setLocation(p.getListX(), p.getListY());
+        }  
       }
     }
     for (Button b : deeds) {
@@ -48,6 +49,7 @@ public class TopMenu implements Menu {
         //Now go through every Person based on the people list you got passed in
         for (Person p : people) {
           p.addState( "IdleState", p.getIdleState() );
+          p.setLocation(p.getGeoX(), p.getGeoY());
           //For each person, cycle through all visible states
 
           if (!p.visibleStates.isEmpty() && p.getDeedNumber()!=targetDeed) { 

@@ -14,7 +14,8 @@ public class Person {
   public float imgWidth, imgHeight;
 
   public float listY, listX;
-  private float easing = 0.01;
+  public float geoX, geoY, targetX, targetY;
+  private float easing = 0.09;
 
   State idleState, detailState, potentialVisibilityState, seenUsersState;
   //State state;
@@ -25,6 +26,18 @@ public class Person {
 
     listX = x;
     listY = y;
+    targetX = listX;
+    targetY = listY;
+
+    geoX = map(p_lon, -130,-65, 100, width-200);
+    geoY = map(p_lat, 55, 20, 100, height-200);
+
+    float theta = random(2*TWO_PI);
+    float xoff = cos(theta) * 40;
+    float yoff = sin(theta) * 40;
+    geoX += xoff;
+    geoY += yoff;
+    
 
     this.x = listX;
     this.y = listY;
@@ -43,20 +56,20 @@ public class Person {
     //state = idleState;
   }
 
-  public void setPosition(float x, float y) {
-    this.x = x;
-    this.x = y;
+  public void setLocation(float x, float y) {
+    targetX = x;
+    targetY = y;
   }
 
   public void display() {
-    x = lerp(x, listX, easing);
-    y = lerp(y, listY, easing);
+    x = lerp(x, targetX, easing);
+    y = lerp(y, targetY, easing);
 
     Iterator iterator = visibleStates.entrySet().iterator();
     while (iterator.hasNext ()) {
       Map.Entry entry = (Map.Entry)iterator.next();
-      State o = (State)entry.getValue();
-      o.display();
+      State state = (State)entry.getValue();
+      state.display();
     }
   }
 
@@ -65,8 +78,8 @@ public class Person {
     Iterator it = visibleStates.entrySet().iterator();
     while (it.hasNext ()) {
       Map.Entry entry = (Map.Entry)it.next();
-      State o = (State)entry.getValue();
-      o.handleClick(x, y);
+      State state = (State)entry.getValue();
+      state.handleClick(x, y);
     }
   }
 
@@ -97,7 +110,7 @@ public class Person {
         }
       }
 
-      if(this.containsState("IdleState"))
+      if (this.containsState("IdleState"))
         ((IdleState)visibleStates.get("IdleState")).nameButton.toggleActive();
     }
   }
@@ -117,14 +130,26 @@ public class Person {
   public float getY() {
     return y;
   }
+  public float getGeoX() {
+    return geoX;
+  }
+  public float getGeoY() {
+    return geoY;
+  }
+  public float getListX() {
+    return listX;
+  }
+  public float getListY() {
+    return listY;
+  }
   public String getName() {
     return name;
   }
   public int getGroupNumber() {
     return groupNum;
   }
-  public String getPostType(){
-     return postType; 
+  public String getPostType() {
+    return postType;
   }
   public String getDescription() {
     return description;
@@ -163,6 +188,7 @@ public class Person {
     String[] oneLine = split(thisPerson, ',');
     print("Loading......");
     name = oneLine[0];
+    if(name.charAt(0)=='0') name = "No Name";
     groupNum = int(oneLine[1])-1;
 
     location = oneLine[2]; //Need to swap $ with ,
@@ -173,8 +199,8 @@ public class Person {
       p_lon = float(tloc[1]);
     }
     else {
-      p_lat = 0;
-      p_lon = 0;
+      p_lat = 37.5;  //If no position data, put them in the center of USA
+      p_lon = -97.5;
     }
 
 

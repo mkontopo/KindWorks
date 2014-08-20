@@ -1,4 +1,6 @@
 
+//TODO: Continue pushing Person positions to the buttons...
+
 
 public class SeenUsersState implements State {
 
@@ -13,7 +15,7 @@ public class SeenUsersState implements State {
   //inherited methods
   public void display() {
 
-    seenUsersTree.run();
+    seenUsersTree.run(p.getX()+30, p.getY()-20);
   }
 
   //inherited methods
@@ -43,12 +45,16 @@ public class SeenUsersState implements State {
       this.x = x;
       this.y = y;
       numUsers = num;
-      treePixelHeight = y-((numUsers-1)*spacer);
+      
       
       viewPotentialVisibilityButton = new Button(x+gutter, (treePixelHeight+40), 30, color(50), color(255), "VIEW POTENTIAL VISIBILITY");
     }
 
-    void run() {
+    void run(float x, float y) {
+      this.x = x;
+      this.y = y;
+      treePixelHeight = y-((numUsers-1)*spacer);
+      
       for (int i=0; i<numUsers; i++) {
         fill(p.getColor());
         noStroke();
@@ -58,7 +64,7 @@ public class SeenUsersState implements State {
       text(numUsers+" SEEN", x+10, treePixelHeight);
       
 
-      viewPotentialVisibilityButton.display();
+      viewPotentialVisibilityButton.display(x+gutter, (treePixelHeight+40));
       viewPotentialVisibilityButton.textHighlight();
     }
 
