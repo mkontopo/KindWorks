@@ -29,7 +29,10 @@ public class IdleState implements State {
       //p.setState( p.getDetailState() );
 
       p.addState("DetailState", p.getDetailState() );
+      
       nameButton.toggleActive();
+      
+      
     }
   }
   public float getTreePixelHeight() {

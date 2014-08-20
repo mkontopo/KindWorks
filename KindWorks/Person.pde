@@ -8,6 +8,7 @@ public class Person {
   private Map<String, Integer> SeenUsers; //String Int pair of seen users and their respective visibilities
   private float p_lat, p_lon, d_lat, d_lon;
   private PImage img;
+  private Context context;
 
   private float x, y;
   private color col;
@@ -21,15 +22,18 @@ public class Person {
   //State state;
   public Map<String, State> visibleStates;
 
-  Person(float x, float y, String input) { //You get one line from the data file
+  Person(Context context, float x, float y, String input) { //You get one line from the data file
+    this.context = context;
+    
     initPerson(input);
+    
 
     listX = x;
     listY = y;
     targetX = listX;
     targetY = listY;
 
-    geoX = map(p_lon, -130,-65, 100, width-200);
+    geoX = map(p_lon, -130, -65, 100, width-200);
     geoY = map(p_lat, 55, 20, 100, height-200);
 
     float theta = random(2*TWO_PI);
@@ -37,7 +41,7 @@ public class Person {
     float yoff = sin(theta) * 40;
     geoX += xoff;
     geoY += yoff;
-    
+
 
     this.x = listX;
     this.y = listY;
@@ -82,11 +86,25 @@ public class Person {
       state.handleClick(x, y);
     }
   }
+  public void removeOthers(ArrayList<Person> people) {
+    
+    for (Person p : people) {
+      if (!p.equals(this) && p.containsState("DetailState")) {
+        p.clearAllStates();
+      }
+    }
+  }
 
-  //SETTERS AND GETTERS
+
 
   public void addState(String k, State v) {
     visibleStates.put(k, v);
+    if(!k.equals("IdleState")){
+        for(Person other : context.getPeople()){
+            if(!other.equals(this) && other.containsState("DetailState"))
+              other.clearAllStates();
+        }
+    }
   }
   public void removeState(String k) {
     Iterator iter = visibleStates.entrySet().iterator();
@@ -188,7 +206,7 @@ public class Person {
     String[] oneLine = split(thisPerson, ',');
     print("Loading......");
     name = oneLine[0];
-    if(name.charAt(0)=='0') name = "No Name";
+    if (name.charAt(0)=='0') name = "No Name";
     groupNum = int(oneLine[1])-1;
 
     location = oneLine[2]; //Need to swap $ with ,

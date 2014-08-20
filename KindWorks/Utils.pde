@@ -1,11 +1,11 @@
 String[] deeds = new String[6];
 public void initDeeds() {
   deeds[0] = "Select a number above to filter by deed.";
-  deeds[1] = "Do Deed Number One";
+  deeds[1] = "In line at coffee shop, pay for someone's coffee behind you.";
   deeds[2] = "Say \"I love you\" to someone you care about.";
-  deeds[3] = "Do Deed Number Three";
-  deeds[4] = "Do Deed Number Four";
-  deeds[5] = "Do Deed Number Five";
+  deeds[3] = "Call or write to somebody who changed your life.";
+  deeds[4] = "Pay for someone's bus ticket today.";
+  deeds[5] = "Come up with your own good deed!";
 }
 /**
  wordwrap taken from http://wiki.processing.org/index.php?title=Word_wrap_text

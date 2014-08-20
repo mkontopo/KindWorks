@@ -26,7 +26,7 @@ public class ConceptOne implements Context {
     for (int i=0; i<41; i++) {
       int groupNum = int(split(input[i], ",")[1])-1;
       println(i);
-      people.add( new Person(gutter+(groupNum*400), 150+(ypos[groupNum]), input[i]) );
+      people.add( new Person(this, gutter+(groupNum*400), 150+(ypos[groupNum]), input[i]) );
       ypos[groupNum] += (textSize*1.75);
     }
   }
@@ -38,10 +38,10 @@ public class ConceptOne implements Context {
     int rs = 100;
     rect(rs, rs, width-(2*rs), height-(2*rs));
 
-//    if (topMenu.getSelection() != 0) {
-//      tint(255);
-//      image(map, rs, rs, width-(2*rs), height-(2*rs));
-//    }
+    //    if (topMenu.getSelection() != 0) {
+    //      tint(255);
+    //      image(map, rs, rs, width-(2*rs), height-(2*rs));
+    //    }
 
     textFont(Anglecia);
     text("KINDWORKS", width/2-(textWidth("KINDWORKS")/2), 75);
@@ -78,6 +78,9 @@ public class ConceptOne implements Context {
       }
     }
   }
+  public ArrayList<Person> getPeople() {
+    return people;
+  }
 }
 
 
@@ -111,6 +114,9 @@ public class ConceptOneIntro implements Context {
     }
   } 
   public void handleKey(char k) {
+  }
+  public ArrayList<Person> getPeople() {
+    return null;
   }
 }
 
