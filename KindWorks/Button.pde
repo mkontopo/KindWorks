@@ -91,6 +91,9 @@ public class Button {
   public void toggleActive() {
     active = !active;
   }
+  public void setActive(boolean a){
+     active = a; 
+  }
   public boolean isActive(){
      return active; 
   }

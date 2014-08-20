@@ -25,10 +25,14 @@ public class DetailState implements State {
     } 
     else if (detailBox.viewSeenUsersButton.isOver(x, y)) {
       p.addState("SeenUsersState", p.getSeenUsersState());
+      p.getSeenUsersState().setButtonVisilibity(true);
     }
   }
   public float getTreePixelHeight() {
     return 0;
+  }
+  public void setButtonVisilibity(boolean result){
+    
   }
 
 

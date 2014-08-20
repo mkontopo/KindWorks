@@ -38,5 +38,8 @@ public class IdleState implements State {
   public float getTreePixelHeight() {
     return 0;
   }
+  public void setButtonVisilibity(boolean result){
+    
+  }
 }
 

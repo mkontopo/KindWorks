@@ -31,5 +31,8 @@ public class IntroScreen implements Context {
   public ArrayList<Person> getPeople() {
     return null;
   }
+  public Menu getBottomMenu(){
+      return null;
+  }
 }
 

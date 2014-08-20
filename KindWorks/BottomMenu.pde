@@ -2,8 +2,10 @@ public class BottomMenu implements Menu {
   public Button showAllSeen, showAllPotential;
 
   ArrayList<Person> people;
+  Context context;
 
-  public BottomMenu(ArrayList<Person> people) {
+  public BottomMenu(Context c, ArrayList<Person> people) {
+    this.context = c;
     this.people = people;
 
     String text1 = "SHOW ALL SEEN USERS";
@@ -30,7 +32,9 @@ public class BottomMenu implements Menu {
       for (Person p : people) {
         if (p.containsState("IdleState")) {
           if (!showAllSeen.isActive()) {
+            p.fromBottomMenu(true);
             p.addState( "SeenUsersState", p.getSeenUsersState() );
+            
           }
           else {
             p.removeState( "SeenUsersState" );
@@ -61,5 +65,6 @@ public class BottomMenu implements Menu {
   public int getSelection() {
     return 0;
   }
+
 }
 

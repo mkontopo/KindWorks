@@ -95,7 +95,11 @@ public class Person {
     }
   }
 
-
+  public void fromBottomMenu(boolean result){
+     if(containsState("SeenUsersState")){
+        seenUsersState.setButtonVisilibity(false); 
+     }
+  }
 
   public void addState(String k, State v) {
     visibleStates.put(k, v);

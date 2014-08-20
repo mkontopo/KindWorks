@@ -1,10 +1,10 @@
 
 public class ConceptOne implements Context {
   VisManager vm;
-  ArrayList<Person> people;
-  Menu topMenu, bottomMenu;
-  PImage legend;
-  PImage map;
+  public ArrayList<Person> people;
+  public Menu topMenu, bottomMenu;
+  public PImage legend;
+  public PImage map;
 
   public ConceptOne(VisManager vm) {
     this.vm = vm;
@@ -14,8 +14,8 @@ public class ConceptOne implements Context {
 
     people = new ArrayList<Person>();
 
-    topMenu = new TopMenu(people);
-    bottomMenu = new BottomMenu(people);
+    topMenu = new TopMenu(this, people);
+    bottomMenu = new BottomMenu(this, people);
 
     int[] ypos = new int[3];
     int gutter = 200;
@@ -81,6 +81,9 @@ public class ConceptOne implements Context {
   public ArrayList<Person> getPeople() {
     return people;
   }
+  public Menu getBottomMenu(){
+      return bottomMenu;
+  }
 }
 
 
@@ -117,6 +120,9 @@ public class ConceptOneIntro implements Context {
   }
   public ArrayList<Person> getPeople() {
     return null;
+  }
+  public Menu getBottomMenu(){
+      return null;
   }
 }
 

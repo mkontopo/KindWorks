@@ -1,11 +1,13 @@
 public class TopMenu implements Menu {
   public Button[] deeds;
   public Button showAll;
+  Context context;
 
   public int deedSelection;
   ArrayList<Person> people;
 
-  public TopMenu(ArrayList<Person> people) {
+  public TopMenu(Context c, ArrayList<Person> people) {
+    this.context = c;
     this.people = people;
     deedSelection = 0;
 
@@ -30,11 +32,11 @@ public class TopMenu implements Menu {
       deedSelection = 0;
       for (Person p : people) {
         p.visibleStates.clear();
-        
-        if (!p.containsState("IdleState")){
+
+        if (!p.containsState("IdleState")) {
           p.addState( "IdleState", p.getIdleState() );
           p.setLocation(p.getListX(), p.getListY());
-        }  
+        }
       }
     }
     for (Button b : deeds) {
@@ -53,13 +55,18 @@ public class TopMenu implements Menu {
           //For each person, cycle through all visible states
 
           if (!p.visibleStates.isEmpty() && p.getDeedNumber()!=targetDeed) { 
-              //clear all visible states for htis Person 
-              
-              p.visibleStates.clear();
-              //toggle the highlighting off
-              
+            //clear all visible states for htis Person 
+
+            p.visibleStates.clear();
+            //toggle the highlighting off
           }
         }
+        
+        //go through all bottom button options and set them OFF
+        //context.getBottomMenu().setActive(false);
+        //context.getBottomMenu().setActive(false);
+        
+        
       }
     }
   }

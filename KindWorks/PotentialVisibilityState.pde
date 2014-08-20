@@ -35,6 +35,9 @@ public class PotentialVisibilityState implements State {
   public float getTreePixelHeight() {
     return 0;
   }
+  public void setButtonVisilibity(boolean result){
+    
+  }
 
   //inherited methods
   public void handleClick(float x, float y) {
