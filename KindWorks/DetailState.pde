@@ -35,14 +35,20 @@ public class DetailState implements State {
       p.getSeenUsersState().addButton( "ViewPotentialVisibilityButton", new Button(30, color(50), color(255), "VIEW POTENTIAL VISIBILITY") );
     } 
     else if (buttonList.containsKey("ViewChallengeButton") && buttonList.get("ViewChallengeButton").isOver(x, y)) {
-      Person cp = p.getChallengePeople().get(0);
-      if (vm.getPeople().contains(cp) || vm.getViewers().contains(cp)) {
+      String tname = (p.getChallengeNames().size() > 0) ? tname = p.getChallengeNames().get(0) : "";
+      Person cp = null;
+      if( containsName(vm.getPeople(), tname) ) cp = getPersonByName(vm.getPeople(), tname);
+      else if( containsName(vm.getViewers(), tname) ) cp = getPersonByName(vm.getViewers(), tname);
+
+      if (cp != null) {
         p.addState("ChallengeStatusState", p.getChallengeStatusState());
         p.addLine(p, p.getChallengePeople().get(0));
         p.getChallengeStatusState().addButton( "CloseButton", new Button(ximg)  );
+        
+        p.removeState("DetailState");
       }
 
-      p.removeState("DetailState");
+      
     }
   }
 
