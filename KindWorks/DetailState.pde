@@ -3,59 +3,87 @@ public class DetailState implements State {
 
 
   Person p;
+  HashMap<String, Button> buttonList;
   DetailBox detailBox;
 
   public DetailState(Person p) {
     this.p = p;
+
+    buttonList = new HashMap<String, Button>();
     detailBox = new DetailBox(p.getX(), p.getY()+35);
   }
 
-  //inherited methods
+
   public void display() {
 
     detailBox.run(p.getX(), p.getY()+35);
   }
 
-  //inherited methods
+
   public void handleClick(float x, float y) {
 
-    if (detailBox.closeButton.isOver(x, y)) {
-      //p.removeState("DetailState");
+    if (buttonList.get("CloseButton").isOver(x, y)) {
+      vm.getContext().setActivePerson(null);
       p.clearAllStates();
-    } 
-    else if (detailBox.viewSeenUsersButton.isOver(x, y)) {
+      p.clearLines();
+    }
+    else if (buttonList.containsKey("ViewSeenUsersButton") && buttonList.get("ViewSeenUsersButton").isOver(x, y)) {
       p.addState("SeenUsersState", p.getSeenUsersState());
-      p.getSeenUsersState().setButtonVisilibity(true);
+      p.getSeenUsersState().addButton( "ViewPotentialVisibilityButton", new Button(30, color(50), color(255), "VIEW POTENTIAL VISIBILITY") );
+    } 
+    else if (buttonList.containsKey("ViewChallengeButton") && buttonList.get("ViewChallengeButton").isOver(x, y)) {
+      Person cp = p.getChallengePeople().get(0);
+      if (vm.getPeople().contains(cp) || vm.getViewers().contains(cp)) {
+        p.addState("ChallengeStatusState", p.getChallengeStatusState());
+        if (p.getChallengePeople().size() > 0) 
+          p.addLine(p, p.getChallengePeople().get(0));
+      }
+
+      p.removeState("DetailState");
     }
   }
+
+  public void addButton(String s, Button b ) {
+    buttonList.put(s, b);
+  }
+  public void removeButton(String k) {
+    Iterator iter = buttonList.entrySet().iterator();
+    while (iter.hasNext ()) {
+      Map.Entry entry = (Map.Entry)iter.next();
+      String thisKey = (String)entry.getKey();
+      if (thisKey.equals(k)) {
+        iter.remove();
+      }
+    }
+  }
+  public HashMap getButtonList() {
+    return buttonList;
+  }
+  //Nonsense 
   public float getTreePixelHeight() {
     return 0;
   }
-  public void setButtonVisilibity(boolean result){
-    
-  }
 
 
-  //----------------------
+  //-------Internal Class to handle info box---------------
   private class DetailBox {
-    public Button closeButton;
-    public Button viewSeenUsersButton;
 
     private float x, y;
     private float boxWidth, boxHeight;
     private int gutter;
     private int textBoxHeight = 100;
-    PImage ximg;
+
     private float imgHeight;
     ArrayList<String> text;
 
     public DetailBox(float x, float y) {
       this.x = x;
       this.y = y;
-      ximg = loadImage("x.png");
 
       gutter = 20;
       boxWidth = p.imgWidth + (gutter*2);
+
+      if (boxWidth < 200) boxWidth = 200;
 
       text = wordWrap(p.getDescription(), int(p.imgWidth-10));
       textBoxHeight = text.size() * 14;     
@@ -65,19 +93,16 @@ public class DetailState implements State {
       else
         imgHeight = 0;
 
-      closeButton = new Button(x, y, ximg);
-      viewSeenUsersButton = new Button(x+gutter, y+imgHeight+textBoxHeight+(gutter*3), 30, color(50), color(255), "VIEW SEEN USERS");
-
       //Finally.. the total box height
-      boxHeight = imgHeight + textBoxHeight + viewSeenUsersButton.h + (gutter*4);
+      boxHeight = imgHeight + textBoxHeight + 50 + (gutter*4);
     }
 
     public void run() {
-      x = p.getX();
-      y = p.getY()+35;
+      x = p.getX()+100;
+      y = p.getY()+10;
       textFont(Anglecia);
 
-      fill(#FFAC74);
+      fill(p.getColor());
       noStroke();
       rect(x, y, boxWidth, boxHeight);
 
@@ -93,20 +118,35 @@ public class DetailState implements State {
         text(s, x+gutter, textY);
         textY += 14;
       }
-      //text(p.getDescription(), x+gutter, y+imgHeight+(2*gutter), p.imgWidth, textBoxHeight);
 
+      if (p.getChallengePeople().size() <=0) {
+        stroke(255);
+        line(x+gutter, textY+20, x+100, textY+20);
+        text("Has not challenged anybody yet.", x+gutter, textY+40);
+      }
 
-
-      closeButton.display(x,y);
-      closeButton.textHighlight();
-      viewSeenUsersButton.display(x+gutter, y+imgHeight+textBoxHeight+(gutter*3));
-      viewSeenUsersButton.textHighlight();
+      Iterator i = buttonList.entrySet().iterator();
+      while (i.hasNext ()) {
+        Map.Entry entry = (Map.Entry)i.next();
+        String thisKey = (String)entry.getKey();
+        Button b = (Button)entry.getValue();
+        if (thisKey.equals("CloseButton")) {
+          b.display(x, y);
+        } 
+        else if (thisKey.equals("ViewSeenUsersButton")) {
+          b.display(x+gutter, y+imgHeight+textBoxHeight+(gutter*3));
+        }
+        else if (thisKey.equals("ViewChallengeButton")) {
+          b.display(x+gutter, y+imgHeight+textBoxHeight+(gutter*3));
+        }
+        b.textHighlight();
+      }
     }
-    
-    public void run(float dx, float dy){
-        this.x = dx;
-        this.y = dy;
-        run();
+
+    public void run(float dx, float dy) {
+      this.x = dx;
+      this.y = dy;
+      run();
     }
   }
   //----------------------

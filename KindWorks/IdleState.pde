@@ -2,44 +2,104 @@
 public class IdleState implements State {
 
   public Person p;
-  public Button nameButton;
+  HashMap<String, Button> buttonList;
+  PImage ximg;
 
   public IdleState(Person p) {
     this.p = p;
-
-    //TODO: The buttons have to be updated with the most current position of the Person object...
-    
-    nameButton = new Button(p.getX(), p.getY(), textWidth(p.getName()), 15, color(255, 0), p.getColor(), "");
+    ximg = loadImage("x.png");
+    buttonList = new HashMap<String, Button>();
+    //buttonList.put( "NameButton", new Button(textWidth(p.getName()), 15, color(255, 0), p.getColor(), "") );
   }
 
   public void display() {
-    textFont(Anglecia);
-
-    nameButton.display(p.getX(), p.getY());
-    nameButton.boxHighlight();
-
+    textFont(Anglecia);    
+    Iterator i = buttonList.entrySet().iterator();
+    while (i.hasNext ()) {
+      Map.Entry entry = (Map.Entry)i.next();
+      String thisKey = (String)entry.getKey();
+      Button b = (Button)entry.getValue();
+      if (thisKey.equals("NameButton")) {
+        b.display(p.getX(), p.getY());
+        b.boxHighlight();
+      }
+    }
     fill(p.getColor());
+    textSize(floor(height / DISPLAY_SCALER));
     text(p.getName(), p.getX(), p.getY());
-    //text(p.getDeedNumber(), p.getX(), p.getY()+10);
   }
 
   //inherited methods
   public void handleClick(float x, float y) {
-    if (nameButton.isOver(x, y)) {
-      //p.setState( p.getDetailState() );
+    
+    if (buttonList.get("NameButton").isOver(x, y)) {
+      vm.getContext().setActivePerson(p); 
+      //if (!k.equals("IdleState")) {
+      for (Person other : vm.getPeople()) {
+        if (!other.equals(this) && other.containsState("IdleState")) {
+          other.clearAllStates();
+          other.clearLines();
+        }
+        //other.getIdleState().buttonList.get("NameButton").setActive(true);
+      }
+      //}
 
-      p.addState("DetailState", p.getDetailState() );
-      
-      nameButton.toggleActive();
-      
-      
+      //      p.addState("DetailState", p.getDetailState() );
+      //      p.getDetailState().addButton(  "CloseButton", new Button(ximg)  );
+      //      p.getDetailState().addButton(  "ViewSeenUsersButton", new Button(30, color(50), color(255), "VIEW SEEN USERS") );
+
+      if (!p.isWaiting()) {
+        p.addState("DetailState", p.getDetailState());
+        p.getDetailState().addButton( "CloseButton", new Button(ximg)  );
+
+        if (p.getChallengeNames().size() > 0) {
+          String txt = "SEE WHO "+ split(p.getName(), " ")[0].toUpperCase() +" CHALLENGED";
+          p.getDetailState().addButton( "ViewChallengeButton", new Button(30, color(50), color(255), txt)  );
+        }
+      } 
+      else {       
+        //Draw the "Connect Seen Users" lines... 
+        if (p.getSeenUsers().size() > 0) {
+          //Draw a line from p to each of p's seen users...
+          for (String viewerName : p.getSeenUsers().keySet()) {
+            if ( containsName(vm.getPeople(), viewerName) )
+              p.addVLine(p, getPersonByName(vm.getPeople(), viewerName));
+            else if ( containsName(vm.getViewers(), viewerName) )
+              p.addVLine(p, getPersonByName(vm.getViewers(), viewerName));
+          }
+        }
+
+        if (p.zoomable()) {
+          for(Person p: vm.getPeople()) p.setZoom(true);
+        }
+      }
+
+
+      buttonList.get("NameButton").setActive(true);
     }
   }
+
+  public void addButton(String s, Button b ) {
+    buttonList.put(s, b);
+  }
+  public void removeButton(String k) {
+    Iterator iter = buttonList.entrySet().iterator();
+    while (iter.hasNext ()) {
+      Map.Entry entry = (Map.Entry)iter.next();
+      String thisKey = (String)entry.getKey();
+      if (thisKey.equals(k)) {
+        iter.remove();
+      }
+    }
+  }
+
+  public HashMap getButtonList() {
+    return buttonList;
+  }
+
+
   public float getTreePixelHeight() {
     return 0;
-  }
-  public void setButtonVisilibity(boolean result){
-    
   }
 }
 

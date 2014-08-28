@@ -3,11 +3,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Iterator;
 
-VisManager vm;
 
-public int textSize;
+public VisManager vm;
+
 final float DISPLAY_SCALER = 900/14;
-PFont Dosis_book, Anglecia;
+public int textSize;
+public PFont Dosis_book, Anglecia;
 
 void setup() {
   size(displayWidth, displayHeight-50);

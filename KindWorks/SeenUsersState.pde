@@ -1,18 +1,15 @@
-
-//TODO: Continue pushing Person positions to the buttons...
-
-
 public class SeenUsersState implements State {
 
   public Person p;
   public SeenUsersTree seenUsersTree;
-  Button viewPotentialVisibilityButton;
-  boolean fromBottomMenu = false;
+  HashMap<String, Button> buttonList;
+
 
   public SeenUsersState(Person p) {
     this.p = p;
+    buttonList = new HashMap<String, Button>();
+
     seenUsersTree = new SeenUsersTree(p.getX()+30, p.getY()-20, p.getSeenUsersNumber());
-    viewPotentialVisibilityButton = new Button(p.getX()+40, 0, 30, color(50), color(255), "VIEW POTENTIAL VISIBILITY");
   }
 
   //inherited methods
@@ -20,24 +17,45 @@ public class SeenUsersState implements State {
 
     seenUsersTree.run(p.getX()+30, p.getY()-20);
 
-    if (fromBottomMenu) {
-      viewPotentialVisibilityButton.display(p.getX()+40, seenUsersTree.getTreePixelHeight()+40);
-      viewPotentialVisibilityButton.textHighlight();
+    Iterator i = buttonList.entrySet().iterator();
+    while (i.hasNext ()) {
+      Map.Entry entry = (Map.Entry)i.next();
+      String thisKey = (String)entry.getKey();
+      Button b = (Button)entry.getValue();
+      if (thisKey.equals("ViewPotentialVisibilityButton")) {
+        b.display(p.getX()+40, seenUsersTree.getTreePixelHeight()+40);
+      } 
+      b.textHighlight();
     }
-  }
-  public void setButtonVisilibity(boolean result){
-    fromBottomMenu = result;
   }
 
   //inherited methods
   public void handleClick(float x, float y) {
-
-    if (viewPotentialVisibilityButton.isOver(x, y)) {
-      p.addState("PotentialVisibilityState", p.getPotentialVisibilityState());
-      //p.addState("IdleState", p.getIdleState());
-      println("added ok");
+    if (buttonList.containsKey("ViewPotentialVisibilityButton")) {
+      if (buttonList.get("ViewPotentialVisibilityButton").isOver(x, y)) {
+        p.addState("PotentialVisibilityState", p.getPotentialVisibilityState());
+      }
     }
   }
+
+  public void addButton(String s, Button b ) {
+    buttonList.put(s, b);
+  }
+
+  public void removeButton(String k) {
+    Iterator iter = buttonList.entrySet().iterator();
+    while (iter.hasNext ()) {
+      Map.Entry entry = (Map.Entry)iter.next();
+      String thisKey = (String)entry.getKey();
+      if (thisKey.equals(k)) {
+        iter.remove();
+      }
+    }
+  }
+  public HashMap getButtonList() {
+    return buttonList;
+  }
+
   public float getTreePixelHeight() {
     return seenUsersTree.getTreePixelHeight();
   }

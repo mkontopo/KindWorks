@@ -4,34 +4,34 @@ public class TopMenu implements Menu {
   Context context;
 
   public int deedSelection;
-  ArrayList<Person> people;
 
-  public TopMenu(Context c, ArrayList<Person> people) {
+  public TopMenu(Context c) {
     this.context = c;
-    this.people = people;
     deedSelection = 0;
 
     deeds = new Button[5];
-    float tx = 0;
-    for (int i=0; i<deeds.length; i++) {
-      tx = width-100-((i+1)*20);
-      deeds[i] = new Button(tx, 20, 20, 20, color(255, 0), color(255), Integer.toString(5-i));
+    for (int i=0; i<deeds.length; i++) { 
+      deeds[i] = new Button(20, 20, color(255, 0), color(255), Integer.toString(5-i));
     }
-    showAll = new Button(tx-50, 20, 30, color(255, 0), color(255), "DEEDS");
+    showAll = new Button(30, color(255, 0), color(255), "DEEDS");
   }
   public void display() {
+    int c = 0;
     for (Button b : deeds) {
-      b.display();
+      b.display(width-100-((++c+1)*20), 20);
       b.underlineHighlight(12);
     }
-    showAll.display();
+    showAll.display(width-150-((++c+1)*20), 20);
     showAll.underlineHighlight(textWidth(showAll.buttonText));
   }
   public void handleClick(float x, float y) {
+    
     if (showAll.isOver(x, y)) {
+      vm.getContext().setActivePerson(null);
       deedSelection = 0;
-      for (Person p : people) {
-        p.visibleStates.clear();
+      for (Person p : vm.getPeople()) {
+        //p.visibleStates.clear();
+        p.clearAllStates();
 
         if (!p.containsState("IdleState")) {
           p.addState( "IdleState", p.getIdleState() );
@@ -41,7 +41,7 @@ public class TopMenu implements Menu {
     }
     for (Button b : deeds) {
       if (b.isOver(x, y)) {
-
+        vm.getContext().setActivePerson(null);
         //Okay this is the button we clicked.
         //Find the deed number as an int
         int targetDeed = int(b.buttonText);
@@ -49,30 +49,96 @@ public class TopMenu implements Menu {
         println("you clicked " + targetDeed);
 
         //Now go through every Person based on the people list you got passed in
-        for (Person p : people) {
+        for (Person p : vm.getPeople()) {
           p.addState( "IdleState", p.getIdleState() );
           p.setLocation(p.getGeoX(), p.getGeoY());
-          //For each person, cycle through all visible states
 
           if (!p.visibleStates.isEmpty() && p.getDeedNumber()!=targetDeed) { 
-            //clear all visible states for htis Person 
-
             p.visibleStates.clear();
-            //toggle the highlighting off
           }
         }
-        
-        //go through all bottom button options and set them OFF
-        //context.getBottomMenu().setActive(false);
-        //context.getBottomMenu().setActive(false);
-        
-        
       }
     }
   }
 
   public int getSelection() {
     return deedSelection;
+  }
+}
+
+public class TopMenuTwo extends TopMenu {
+  ArrayList<Person> viewers;
+
+  public TopMenuTwo(Context c) {
+    super(c);
+  }
+  public void handleClick(float x, float y) {
+    
+    if (showAll.isOver(x, y)) {
+      vm.getContext().setActivePerson(null);
+      deedSelection = 0;
+      for (Person p : vm.getPeople()) {
+        //p.visibleStates.clear();
+        p.clearAllStates();
+        p.clearLines();
+
+        if (!p.containsState("IdleState")) {
+          p.addState( "IdleState", p.getIdleState() );
+          p.setLocation(p.getListX(), p.getListY());
+        }
+      }
+      for (Person p : vm.getViewers()) {
+        //p.visibleStates.clear();
+        p.clearAllStates();
+        p.clearLines();
+
+        if (!p.containsState("IdleState")) {
+          p.addState( "IdleState", p.getIdleState() );
+          p.setLocation(p.getListX(), p.getListY());
+        }
+      }
+    }
+    for (Button b : deeds) {
+      if (b.isOver(x, y)) {
+        vm.getContext().setActivePerson(null);
+        //vm.clearLines();
+        //Okay this is the button we clicked.
+        //Find the deed number as an int
+        int targetDeed = int(b.buttonText);
+        deedSelection = targetDeed;
+        println("you clicked " + targetDeed);
+
+        //Now go through every Person based on the people list you got passed in
+        for (Person p : vm.getPeople()) {
+          p.addState( "IdleState", p.getIdleState() );
+          if (!p.visibleStates.isEmpty() && p.getDeedNumber()!=targetDeed) { 
+            if (sawDeed(p, targetDeed) == false) {
+              p.visibleStates.clear();
+              p.clearLines();
+            }
+          }
+        }
+        for (Person p : vm.getViewers()) {
+          p.addState( "IdleState", p.getIdleState() );
+          if (sawDeed(p, targetDeed) == false) {
+            p.visibleStates.clear();
+            p.clearLines();
+          }
+        }
+      }
+    }
+    context.setPositions();
+  }
+  public boolean sawDeed(Person tp, int deed) {
+    //does your name appear the SeenUsers list for a person who completed deed n
+    boolean result;
+    for (Person p : vm.getPeople()) {
+      if (p.getDeed() == deed && p.getSeenUsers().containsKey(trim(tp.getName()))) { 
+        //println("found somebody");
+        return true;
+      }
+    }
+    return false;
   }
 }
 

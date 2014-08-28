@@ -48,3 +48,42 @@ ArrayList wordWrap(String s, int maxWidth) {
   return a;
 }
 
+public boolean containsName(ArrayList<Person> peeps, String name) {
+  for (int i=0; i<peeps.size(); i++) {
+    Person p = peeps.get(i);
+    if (trim(p.getName()).equals(trim(name)))
+      return true;
+  } 
+  return false;
+}
+public Person getPersonByName(ArrayList<Person> peeps, String name) {
+  for (int i=0; i<peeps.size(); i++) {
+    Person p = peeps.get(i);
+    if (trim(p.getName()).equals(trim(name)))
+      return p;
+  } 
+  return null;
+}
+
+public class Line {
+  Person a, b;
+  Line(Person a, Person b) {
+    this.a = a;
+    this.b = b;
+  } 
+  public void display() {  
+    stroke(100);
+    line(a.getX(), a.getY(), b.getX(), b.getY());
+  }
+}
+
+public class VLine extends Line {
+  VLine(Person a, Person b) {
+    super(a,b);
+  }
+  public void display() {
+    stroke(100);
+    line(a.getX(), a.getY(), b.getX(), b.getY());
+  }
+}
+

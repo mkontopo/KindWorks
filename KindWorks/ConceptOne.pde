@@ -1,34 +1,36 @@
 
 public class ConceptOne implements Context {
-  VisManager vm;
-  public ArrayList<Person> people;
   public Menu topMenu, bottomMenu;
   public PImage legend;
-  public PImage map;
+  boolean first = true;
+  PVector[] initialLocations;
+  VisManager vm;
+  public Person activePerson;
 
   public ConceptOne(VisManager vm) {
+
     this.vm = vm;
-
-    initDeeds();
-    String[] input = loadStrings("KindWorksData_Revised.csv");
-
-    people = new ArrayList<Person>();
-
-    topMenu = new TopMenu(this, people);
-    bottomMenu = new BottomMenu(this, people);
-
+    activePerson = null;
+    initialLocations = new PVector[vm.getPeople().size()];
     int[] ypos = new int[3];
     int gutter = 200;
-    legend = loadImage("key.jpg");
-    map = loadImage("usa.png");
 
-    //TODO: Fix this weird loading bug
-    for (int i=0; i<41; i++) {
-      int groupNum = int(split(input[i], ",")[1])-1;
-      println(i);
-      people.add( new Person(this, gutter+(groupNum*400), 150+(ypos[groupNum]), input[i]) );
+    for (int i=0; i<vm.people.size(); i++) {
+      int groupNum = int(split(vm.input[i], ",")[1])-1;
+      initialLocations[i] = new PVector(gutter+(groupNum*400), 150+(ypos[groupNum]));
+      vm.getPeople().get(i).initLocation(initialLocations[i].x, initialLocations[i].y);
       ypos[groupNum] += (textSize*1.75);
     }
+
+    topMenu = new TopMenu(this);
+    bottomMenu = new BottomMenu(this);
+
+    legend = loadImage("key.jpg");
+  }
+  public void setPositions() {
+  }
+  public void setActivePerson(Person p) {
+    activePerson = p;
   }
 
   public void display() {
@@ -52,7 +54,7 @@ public class ConceptOne implements Context {
     fill(#40a4a3);
     text(deeds[topMenu.getSelection()], width/2-(textWidth(deeds[topMenu.getSelection()])/2), 120);
 
-    for (Person p : people) {
+    for (Person p : vm.people) {
       p.display();
     }
     topMenu.display();
@@ -61,7 +63,7 @@ public class ConceptOne implements Context {
 
 
   public void handleClick(float x, float y) {
-    for (Person p : people) {
+    for (Person p : vm.people) {
       p.handleClick(x, y);
     }
     topMenu.handleClick(x, y);
@@ -70,19 +72,22 @@ public class ConceptOne implements Context {
   public void handleKey(char k) {
     //Clear all
     if (key=='c' || key=='C') {
-      for (Person p : people) {
+      for (Person p : vm.people) {
 
         if (p.visibleStates.size() > 1)
           p.visibleStates.clear();
         //p.clearAllStates();
       }
     }
+    else if (key == 'm' || key=='M') {
+      vm.setContext( vm.getIntroContext() );
+    }
   }
   public ArrayList<Person> getPeople() {
-    return people;
+    return vm.people;
   }
-  public Menu getBottomMenu(){
-      return bottomMenu;
+  public Menu getBottomMenu() {
+    return bottomMenu;
   }
 }
 
@@ -93,36 +98,51 @@ public class ConceptOneIntro implements Context {
   VisManager vm;
   PImage conceptIntro;
   Button conceptOneButton, conceptTwoButton;
+  String b1, b2;
 
   public ConceptOneIntro(VisManager vm) {
     this.vm = vm;
     conceptIntro = loadImage("ConceptOneIntro.jpg");
 
-    String b1 = "CONCEPT 1";
-    String b2 = "CONCEPT 2";
-    float halfButton = textWidth(b1)/2;
-    conceptOneButton = new Button(width/2-halfButton, 100, 50, color(#40a4a3), color(255), b1);
-    conceptTwoButton = new Button(width/2-halfButton, 150, 50, color(#40a4a3), color(255), b2);
+    b1 = "CONCEPT 1";
+    b2 = "CONCEPT 2";
+
+    conceptOneButton = new Button(50, color(#40a4a3), color(255), b1);
+    conceptTwoButton = new Button(50, color(#40a4a3), color(255), b2);
+  }
+  public void setPositions() {
   }
 
   public void display() {
 
     image(conceptIntro, 0, 0, width, height);
-    conceptOneButton.display();
-    conceptTwoButton.display();
+
+
+    float halfButton = textWidth(b1)/2;
+    conceptOneButton.display(width/2-halfButton, 100);
+    conceptTwoButton.display(width/2-halfButton, 150);
   }
   public void handleClick(float x, float y) {
     if (conceptOneButton.isOver(x, y)) {
       vm.setContext( vm.getConceptOneContext() );
     }
+    else if (conceptTwoButton.isOver(x, y)) {
+      vm.setContext( vm.getConceptTwoIntroContext() );
+    }
   } 
   public void handleKey(char k) {
+    if (key == 'm' || key=='M') {
+      vm.setContext( vm.getIntroContext() );
+    }
   }
   public ArrayList<Person> getPeople() {
     return null;
   }
-  public Menu getBottomMenu(){
-      return null;
+  public Menu getBottomMenu() {
+    return null;
+  }
+  public void setActivePerson(Person p) {
+   
   }
 }
 

@@ -8,10 +8,11 @@ public class Button {
   private int buttonGutter;
   private boolean over;
   private boolean active = false;
+  private boolean waiting = false;
 
-  public Button(float x, float y, float h, color col, color txtCol, String txt) {
-    this.x = x;
-    this.y = y;
+  public Button(float h, color col, color txtCol, String txt) {
+    this.x = 0;
+    this.y = 0;
     buttonGutter = 20;
     this.w = textWidth(txt) + buttonGutter;
     this.h = h;
@@ -24,12 +25,12 @@ public class Button {
   }
 
 
-  public Button(float x, float y, float w, float h, color col, color txtCol, String txt) {
-    this(x, y, h, col, txtCol, txt);
+  public Button(float w, float h, color col, color txtCol, String txt) {
+    this(h, col, txtCol, txt);
     this.w = w;
   }
-  public Button(float x, float y, PImage img) {
-    this(x, y, img.width, img.height, color(255, 0), color(255, 0), "");
+  public Button(PImage img) {
+    this(img.width, img.height, color(255, 0), color(255, 0), "");
     this.img = img;
   }
 
@@ -43,7 +44,14 @@ public class Button {
     fill(col);
     noStroke();
     rect(x, y, w, h);
-    fill(txtCol, alpha);
+
+
+    if (!waiting)
+      fill(txtCol, alpha);
+    else {
+      fill(txtCol, map(sin(millis()/100.0), -1,1, 50,250));
+    }
+    textSize(12);
     text(buttonText, x+(buttonGutter/2), y+5);
     if (img != null)
       image(img, x, y);
@@ -61,12 +69,11 @@ public class Button {
   }
   public void fillHighlight() {
     col = (this.isOver(mouseX, mouseY)) ?  color(50) : originalCol;
-    
-    if(active)
+
+    if (active)
       col = color(50);
     else
       col = color(255, 0);
-    
   }
 
   public void underlineHighlight(float len) {
@@ -91,11 +98,17 @@ public class Button {
   public void toggleActive() {
     active = !active;
   }
-  public void setActive(boolean a){
-     active = a; 
+  public void setActive(boolean a) {
+    active = a;
   }
-  public boolean isActive(){
-     return active; 
+  public void setWaiting(boolean w) {
+    waiting = w;
+  }
+  public boolean isActive() {
+    return active;
+  }
+  public boolean isWaiting(){
+     return waiting; 
   }
 
   public void drawHighlightBox() {

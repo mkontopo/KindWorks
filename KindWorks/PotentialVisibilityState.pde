@@ -1,18 +1,18 @@
 
 public class PotentialVisibilityState implements State {
 
-
+  HashMap<String, Button> buttonList;
   Person p;
   PImage temp_tree;
   float ypos, dia;
 
   public PotentialVisibilityState(Person p) {
+    buttonList = new HashMap<String, Button>();
     this.p = p;
     temp_tree = loadImage("temp_tree.png");
 
     //if the person's list has a "seenuserstate" in it, we grab the height from that
-    //otherwise the height is p.y-n 
-    
+    //otherwise the height is p.y-n
   }
 
 
@@ -32,11 +32,26 @@ public class PotentialVisibilityState implements State {
   }
 
 
-  public float getTreePixelHeight() {
-    return 0;
+ public void addButton(String s, Button b ) {
+    buttonList.put(s, b);
   }
-  public void setButtonVisilibity(boolean result){
-    
+
+  public void removeButton(String k) {
+    Iterator iter = buttonList.entrySet().iterator();
+    while (iter.hasNext ()) {
+      Map.Entry entry = (Map.Entry)iter.next();
+      String thisKey = (String)entry.getKey();
+      if (thisKey.equals(k)) {
+        iter.remove();
+      }
+    }
+  }
+  public HashMap getButtonList() {
+    return buttonList;
+  }
+
+  public float getTreePixelHeight() {
+    return 0;//seenUsersTree.getTreePixelHeight();
   }
 
   //inherited methods
