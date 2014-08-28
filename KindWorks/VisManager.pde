@@ -27,11 +27,11 @@ public class VisManager {
 
     for (int i=0; i<41; i++) {
 
-      //println(input[i]);
+      //Creating the people array
       Person tempPerson = new Person(this, input[i]);
       people.add( tempPerson );
 
-
+      //Creating the viewers array
       if (tempPerson.getSeenUsers().size() > 0) {
         for (String name : tempPerson.getSeenUsers().keySet()) {
 
@@ -42,7 +42,7 @@ public class VisManager {
         }
       }
 
-      //For spacing out the people
+      //A list of States. For spacing out the people later.
       if (tempPerson.location.charAt(0) != ('0')) {
         println(tempPerson.location);
 
@@ -57,7 +57,7 @@ public class VisManager {
         }
       }
     }
-
+    
     //Another loop that removes participant names from the Viewers list
     for (int i=viewers.size()-1; i>=0; i--) {
       Person viewer = viewers.get(i);
@@ -65,10 +65,7 @@ public class VisManager {
         viewers.remove(i);
     }
 
-    //    println("Viewers: ");
-    //    for (int i=0; i<viewers.size(); i++)
-    //      println(viewers.get(i).name);
-
+    //Assign each person their "challenge" person
     for (Person p : people) {
       if (p.getChallengeNames().size() > 0) {
         String s = p.getChallengeNames().get(0);
@@ -80,13 +77,15 @@ public class VisManager {
       }
     }
 
+    //Init Context
     introScreen = new IntroScreen(this);
     conceptOneIntro = new ConceptOneIntro(this);
     conceptTwoIntro = new ConceptTwoIntro(this);
     conceptOne = new ConceptOne(this);
     conceptTwo = new ConceptTwo(this);
 
-    context = conceptTwo;
+    //Assign context
+    context = introScreen;
 
     textAlign(LEFT, TOP);
     smooth();

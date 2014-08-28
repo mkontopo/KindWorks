@@ -9,7 +9,7 @@ public class SeenUsersState implements State {
     this.p = p;
     buttonList = new HashMap<String, Button>();
 
-    seenUsersTree = new SeenUsersTree(p.getX()+30, p.getY()-20, p.getSeenUsersNumber());
+    seenUsersTree = new SeenUsersTree(p.getX()+100, p.getY()-20, p.getSeenUsersNumber());
   }
 
   //inherited methods
@@ -23,7 +23,7 @@ public class SeenUsersState implements State {
       String thisKey = (String)entry.getKey();
       Button b = (Button)entry.getValue();
       if (thisKey.equals("ViewPotentialVisibilityButton")) {
-        b.display(p.getX()+40, seenUsersTree.getTreePixelHeight()+40);
+        b.display(p.getX()+50, seenUsersTree.getTreePixelHeight()+40);
       } 
       b.textHighlight();
     }

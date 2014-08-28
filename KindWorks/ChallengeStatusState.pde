@@ -54,19 +54,25 @@ public class ChallengeStatusState implements State {
       text(s, x+20, y+50+(i*20));
     }
 
-    //Show any Buttons
-    //    Iterator i = buttonList.entrySet().iterator();
-    //    while (i.hasNext ()) {
-    //      Map.Entry entry = (Map.Entry)i.next();
-    //      String thisKey = (String)entry.getKey();
-    //      Button b = (Button)entry.getValue();
-    //
-    //      b.textHighlight();
-    //    }
+    Iterator i = buttonList.entrySet().iterator();
+    while (i.hasNext ()) {
+      Map.Entry entry = (Map.Entry)i.next();
+      String thisKey = (String)entry.getKey();
+      Button b = (Button)entry.getValue();
+      if (thisKey.equals("CloseButton")) {
+        b.display(x, y);
+      } 
+      b.textHighlight();
+    }
   }
 
   public void handleClick(float x, float y) {
-    if (buttonList.containsKey("ViewPotentialVisibilityButton")) {
+    if (buttonList.get("CloseButton").isOver(x, y)) {
+      vm.getContext().setActivePerson(null);
+      p.clearAllStates();
+      p.clearLines();
+    }
+    else if (buttonList.containsKey("ViewPotentialVisibilityButton")) {
       if (buttonList.get("ViewPotentialVisibilityButton").isOver(x, y)) {
         p.addState("PotentialVisibilityState", p.getPotentialVisibilityState());
       }
@@ -79,6 +85,7 @@ public class ChallengeStatusState implements State {
   }
 
   public void addButton(String s, Button b ) {
+    buttonList.put(s, b);
   }
 
   public void removeButton(String k) {

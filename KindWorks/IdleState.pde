@@ -31,7 +31,7 @@ public class IdleState implements State {
 
   //inherited methods
   public void handleClick(float x, float y) {
-    
+
     if (buttonList.get("NameButton").isOver(x, y)) {
       vm.getContext().setActivePerson(p); 
       //if (!k.equals("IdleState")) {
@@ -44,33 +44,37 @@ public class IdleState implements State {
       }
       //}
 
-      //      p.addState("DetailState", p.getDetailState() );
-      //      p.getDetailState().addButton(  "CloseButton", new Button(ximg)  );
-      //      p.getDetailState().addButton(  "ViewSeenUsersButton", new Button(30, color(50), color(255), "VIEW SEEN USERS") );
+      if (vm.getContext().equals(vm.getConceptOneContext())) {
+        p.addState("DetailState", p.getDetailState() );
+        p.getDetailState().addButton(  "CloseButton", new Button(ximg)  );
+        p.getDetailState().addButton(  "ViewSeenUsersButton", new Button(30, color(50), color(255), "VIEW SEEN USERS") );
+      }
+      else {
 
-      if (!p.isWaiting()) {
-        p.addState("DetailState", p.getDetailState());
-        p.getDetailState().addButton( "CloseButton", new Button(ximg)  );
+        if (!p.isWaiting()) {
+          p.addState("DetailState", p.getDetailState());
+          p.getDetailState().addButton( "CloseButton", new Button(ximg)  );
 
-        if (p.getChallengeNames().size() > 0) {
-          String txt = "SEE WHO "+ split(p.getName(), " ")[0].toUpperCase() +" CHALLENGED";
-          p.getDetailState().addButton( "ViewChallengeButton", new Button(30, color(50), color(255), txt)  );
-        }
-      } 
-      else {       
-        //Draw the "Connect Seen Users" lines... 
-        if (p.getSeenUsers().size() > 0) {
-          //Draw a line from p to each of p's seen users...
-          for (String viewerName : p.getSeenUsers().keySet()) {
-            if ( containsName(vm.getPeople(), viewerName) )
-              p.addVLine(p, getPersonByName(vm.getPeople(), viewerName));
-            else if ( containsName(vm.getViewers(), viewerName) )
-              p.addVLine(p, getPersonByName(vm.getViewers(), viewerName));
+          if (p.getChallengeNames().size() > 0) {
+            String txt = "SEE WHO "+ split(p.getName(), " ")[0].toUpperCase() +" CHALLENGED";
+            p.getDetailState().addButton( "ViewChallengeButton", new Button(30, color(50), color(255), txt)  );
           }
-        }
+        } 
+        else {       
+          //Draw the "Connect Seen Users" lines... 
+          if (p.getSeenUsers().size() > 0) {
+            //Draw a line from p to each of p's seen users...
+            for (String viewerName : p.getSeenUsers().keySet()) {
+              if ( containsName(vm.getPeople(), viewerName) )
+                p.addVLine(p, getPersonByName(vm.getPeople(), viewerName));
+              else if ( containsName(vm.getViewers(), viewerName) )
+                p.addVLine(p, getPersonByName(vm.getViewers(), viewerName));
+            }
+          }
 
-        if (p.zoomable()) {
-          for(Person p: vm.getPeople()) p.setZoom(true);
+          if (p.zoomable()) {
+            for (Person p: vm.getPeople()) p.setZoom(true);
+          }
         }
       }
 

@@ -2,7 +2,7 @@
 public class ConceptOne implements Context {
   public Menu topMenu, bottomMenu;
   public PImage legend;
-  boolean first = true;
+  private boolean start = true;
   PVector[] initialLocations;
   VisManager vm;
   public Person activePerson;
@@ -11,16 +11,6 @@ public class ConceptOne implements Context {
 
     this.vm = vm;
     activePerson = null;
-    initialLocations = new PVector[vm.getPeople().size()];
-    int[] ypos = new int[3];
-    int gutter = 200;
-
-    for (int i=0; i<vm.people.size(); i++) {
-      int groupNum = int(split(vm.input[i], ",")[1])-1;
-      initialLocations[i] = new PVector(gutter+(groupNum*400), 150+(ypos[groupNum]));
-      vm.getPeople().get(i).initLocation(initialLocations[i].x, initialLocations[i].y);
-      ypos[groupNum] += (textSize*1.75);
-    }
 
     topMenu = new TopMenu(this);
     bottomMenu = new BottomMenu(this);
@@ -34,6 +24,11 @@ public class ConceptOne implements Context {
   }
 
   public void display() {
+    if(start){
+      initPositions();
+      start = false;
+    }
+    
     background(#40a4a3);
 
     fill(#f1f2f2);
@@ -89,6 +84,19 @@ public class ConceptOne implements Context {
   public Menu getBottomMenu() {
     return bottomMenu;
   }
+  public void initPositions() {
+    initialLocations = new PVector[vm.getPeople().size()];
+
+    int[] ypos = new int[3];
+    int gutter = 200;
+
+    for (int i=0; i<vm.people.size(); i++) {
+      int groupNum = int(split(vm.input[i], ",")[1])-1;
+      initialLocations[i] = new PVector(gutter+(groupNum*400), 150+(ypos[groupNum]));
+      vm.getPeople().get(i).initLocation(initialLocations[i].x, initialLocations[i].y);
+      ypos[groupNum] += (textSize*1.75);
+    }
+  }
 }
 
 
@@ -114,7 +122,7 @@ public class ConceptOneIntro implements Context {
   }
 
   public void display() {
-
+    tint(255);
     image(conceptIntro, 0, 0, width, height);
 
 
@@ -142,7 +150,6 @@ public class ConceptOneIntro implements Context {
     return null;
   }
   public void setActivePerson(Person p) {
-   
   }
 }
 

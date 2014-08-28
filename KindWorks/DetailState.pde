@@ -5,9 +5,11 @@ public class DetailState implements State {
   Person p;
   HashMap<String, Button> buttonList;
   DetailBox detailBox;
+  PImage ximg;
 
   public DetailState(Person p) {
     this.p = p;
+    ximg = loadImage("x.png");
 
     buttonList = new HashMap<String, Button>();
     detailBox = new DetailBox(p.getX(), p.getY()+35);
@@ -27,6 +29,7 @@ public class DetailState implements State {
       p.clearAllStates();
       p.clearLines();
     }
+
     else if (buttonList.containsKey("ViewSeenUsersButton") && buttonList.get("ViewSeenUsersButton").isOver(x, y)) {
       p.addState("SeenUsersState", p.getSeenUsersState());
       p.getSeenUsersState().addButton( "ViewPotentialVisibilityButton", new Button(30, color(50), color(255), "VIEW POTENTIAL VISIBILITY") );
@@ -35,8 +38,8 @@ public class DetailState implements State {
       Person cp = p.getChallengePeople().get(0);
       if (vm.getPeople().contains(cp) || vm.getViewers().contains(cp)) {
         p.addState("ChallengeStatusState", p.getChallengeStatusState());
-        if (p.getChallengePeople().size() > 0) 
-          p.addLine(p, p.getChallengePeople().get(0));
+        p.addLine(p, p.getChallengePeople().get(0));
+        p.getChallengeStatusState().addButton( "CloseButton", new Button(ximg)  );
       }
 
       p.removeState("DetailState");
@@ -98,8 +101,8 @@ public class DetailState implements State {
     }
 
     public void run() {
-      x = p.getX()+100;
-      y = p.getY()+10;
+      x = p.getX()+30;
+      y = p.getY()+20;
       textFont(Anglecia);
 
       fill(p.getColor());
@@ -119,10 +122,12 @@ public class DetailState implements State {
         textY += 14;
       }
 
-      if (p.getChallengePeople().size() <=0) {
-        stroke(255);
-        line(x+gutter, textY+20, x+100, textY+20);
-        text("Has not challenged anybody yet.", x+gutter, textY+40);
+      if (vm.getContext().equals(vm.getConceptTwoContext())) {
+        if (p.getChallengePeople().size() <=0) {
+          stroke(255);
+          line(x+gutter, textY+20, x+100, textY+20);
+          text("Has not challenged anybody yet.", x+gutter, textY+40);
+        }
       }
 
       Iterator i = buttonList.entrySet().iterator();

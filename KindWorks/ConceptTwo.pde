@@ -6,13 +6,13 @@ public class ConceptTwo implements Context {
 
   public PImage legend;
   float x, y, targetx, targety, targetZoom, zoomFactor;
-
+  private boolean start = true;
   public Person activePerson;
 
   public ConceptTwo(VisManager vm) {
     this.vm = vm;
     activePerson = null;
-    initPositions();
+    
     targetZoom = 1.0;
     zoomFactor = 1.0;
     targetx = 0;
@@ -24,6 +24,11 @@ public class ConceptTwo implements Context {
   }
 
   public void display() {
+    if(start){
+      initPositions();
+      start = false;
+    }
+    
     background(#2e313c);
 
     fill(#f1f2f2);
@@ -234,7 +239,7 @@ public class ConceptTwoIntro implements Context {
   }
 
   public void display() {
-
+    tint(255);
     image(conceptIntro, 0, 0, width, height);
 
 

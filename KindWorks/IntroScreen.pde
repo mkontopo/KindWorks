@@ -18,6 +18,7 @@ public class IntroScreen implements Context {
 
   public void display() {
 
+    tint(255);
     image(intro, 0, 0, width, height);
     float halfButton = textWidth(b1)/2;
     int offset = 150;

@@ -35,8 +35,8 @@ public class TopMenu implements Menu {
 
         if (!p.containsState("IdleState")) {
           p.addState( "IdleState", p.getIdleState() );
-          p.setLocation(p.getListX(), p.getListY());
         }
+        p.setLocation(p.getListX(), p.getListY());
       }
     }
     for (Button b : deeds) {
