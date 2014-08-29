@@ -125,7 +125,7 @@ public class ConceptTwo implements Context {
   }
   public float findXPos(float xin) {
     //Split the screen into n sections
-    int n = 20;
+    int n = 12;
     float oneCol = width / n;
     float[] xs = new float[n-1];
     //init list
@@ -143,6 +143,7 @@ public class ConceptTwo implements Context {
   public void initPositions() {
     for (String state : vm.states) {
       float ypos = 200;
+      float ypos2 = 200;
       for (Person p : vm.getPeople()) {
         String tstate = "";
 
@@ -156,8 +157,8 @@ public class ConceptTwo implements Context {
           }
         }
         else {
-          p.initLocation(width/2, ypos);
-          ypos += 20;
+          p.initLocation(width/2+random(-200,200), ypos2);
+          ypos2 += 20;
         }
       }//end Person for
       for (Person p : vm.getViewers()) {
@@ -167,13 +168,13 @@ public class ConceptTwo implements Context {
           tstate = split(p.location, '$')[1];
           tstate = trim(tstate);
           if (tstate.equals(state) && p.visibleStates.size()>0) {
-            p.initLocation(findXPos(p.getAssociatedPerson().geoX), ypos);
+            p.initLocation(p.getAssociatedPerson().geoX, ypos);
             ypos+=20;
           }
         }
         else {
-          p.initLocation(width/2, ypos);
-          ypos += 20;
+          p.initLocation(width/2, ypos2);
+          ypos2 += 20;
         }
       }//end Viewers for
     }//end state for
@@ -182,6 +183,7 @@ public class ConceptTwo implements Context {
   public void setPositions() {
     for (String state : vm.states) {
       float ypos = 200;
+      float ypos2 = 200;
       for (Person p : vm.getPeople()) {
         String tstate = "";
 
@@ -195,8 +197,8 @@ public class ConceptTwo implements Context {
           }
         }
         else {
-          p.setLocation(width/2, ypos);
-          ypos += 20;
+          p.setLocation(width/2, ypos2);
+          ypos2 += 20;
         }
       }//end Person for
       for (Person p : vm.getViewers()) {
@@ -206,13 +208,13 @@ public class ConceptTwo implements Context {
           tstate = split(p.location, '$')[1];
           tstate = trim(tstate);
           if (tstate.equals(state) && p.visibleStates.size()>0) {
-            p.setLocation(findXPos(p.getAssociatedPerson().geoX), ypos);
+            p.setLocation(findXPos(p.getAssociatedPerson().getX()), ypos);
             ypos+=20;
           }
         }
         else {
-          p.setLocation(width/2, ypos);
-          ypos += 20;
+          p.setLocation(width/2, ypos2);
+          ypos2 += 20;
         }
       }//end Viewers for
     }//end state for
@@ -260,6 +262,7 @@ public class ConceptTwoIntro implements Context {
   public void handleKey(char k) {
     if (key == 'm' || key=='M') {
       vm.setContext( vm.getIntroContext() );
+      for(Person p : vm.getPeople()) p.clearLines();
     }
   }
   public ArrayList<Person> getPeople() {

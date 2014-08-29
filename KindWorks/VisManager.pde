@@ -37,7 +37,7 @@ public class VisManager {
 
           if (!containsName(viewers, name)) {
             viewers.add( new Person(this, name+",0,"+tempPerson.location+",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0") );
-            viewers.get(viewers.size()-1).associatePerson(tempPerson);
+            //viewers.get(viewers.size()-1).associatePerson(tempPerson);
           }
         }
       }
@@ -63,6 +63,10 @@ public class VisManager {
       Person viewer = viewers.get(i);
       if (containsName(people, viewer.name))
         viewers.remove(i);
+    }
+    //A final loop that sets the Associated person for each viewer
+    for(Person v : viewers){
+       v.associatePerson( people.get(floor(random(people.size()))) ); 
     }
 
     //Assign each person their "challenge" person
