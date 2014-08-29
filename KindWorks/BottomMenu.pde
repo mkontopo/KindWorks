@@ -98,7 +98,7 @@ public class BottomMenuTwo implements Menu {
     if (connectSeenUsers.isWaiting()) {
       fill(50);
       String t = "Select a name to view Seen Users";
-      text(t, width/2-(textWidth(t)/2), height-120);
+      text(t, width/2, height-120);
     }
   }
 

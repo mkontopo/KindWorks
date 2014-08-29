@@ -65,12 +65,30 @@ public Person getPersonByName(ArrayList<Person> peeps, String name) {
   return null;
 }
 
+public float findXPos(float xin) {
+  //Split the screen into n sections
+  int n = 11;
+  float oneCol = width / n;
+  float[] xs = new float[n-1];
+  //init list
+  for (int i=0; i<xs.length; i++) {
+    xs[i] = (i+1) * oneCol;
+  }
+  //search list
+  for (int i=0; i<xs.length; i++) {
+    if (xin - xs[i] < oneCol) {
+      return xs[i];
+    }
+  }
+  return width/2;
+}
+
 public class Line {
   Person a, b;
   float cx1, cy1, cx2, cy2, t;
   float bl = 0;
   float dashlength = 5;
- 
+
   Line(Person a, Person b) {
     this.a = a;
     this.b = b;
@@ -84,8 +102,13 @@ public class Line {
     cy1 = a.getY();
     cx2 = (b.getX() < width/2) ? b.getX()+offset : b.getX()-offset;
     cy2 = b.getY();
+
+    if (a.getX() == b.getX()) {
+      cx1 = a.getX() - 100;
+      cx2 = b.getX() - 100;
+    }
     //bezier(a.getX(), a.getY(), cx1, cy1, cx2, cy2, b.getX(), b.getY());
-    renderBezier(a.getX(), a.getY(), cx1, cy1, cx2, cy2, b.getX(), b.getY());
+    renderBezier(a.getX(), a.getY()+10, cx1, cy1+10, cx2, cy2+10, b.getX(), b.getY()+10);
   }
   private void renderBezier(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
     bl = blength(x1, y1, x2, y2, x3, y3, x4, y4);
@@ -109,6 +132,7 @@ public class Line {
     float dx = x1;
     float dy = y1;
     float t = 0;
+    strokeWeight(1);
     for (int i=0; i < dashnum*2; i++) {
       t += 0.001;
       float[] p = findPositionOnBezier(x1, y1, x2, y2, x3, y3, x4, y4, t);
@@ -121,6 +145,7 @@ public class Line {
         p[1] = y4;
       }
       if (i*0.5 == Math.round(i*0.5)) {
+
         line(dx, dy, p[0], p[1]);
       }
       dx = p[0];
@@ -167,6 +192,7 @@ public class VLine extends Line {
   }
   public void display() {
     stroke(a.getColor());
+    strokeWeight(1);
     noFill();
     float offset = abs(a.getX() - b.getX())/2;
     //line(a.getX(), a.getY(), b.getX(), b.getY());
@@ -174,8 +200,13 @@ public class VLine extends Line {
     cy1 = a.getY();
     cx2 = (a.getX() < b.getX()) ? b.getX()-offset : b.getX()+offset;
     cy2 = b.getY();
+
+    if (a.getX() == b.getX()) {
+      cx1 = a.getX() - 100;
+      cx2 = b.getX() - 100;
+    }
     //line(a.getX(), a.getY(), b.getX(), b.getY());
-    bezier(a.getX(), a.getY(), cx1, cy1, cx2, cy2, b.getX(), b.getY());
+    bezier(a.getX(), a.getY()+10, cx1, cy1+10, cx2, cy2+10, b.getX(), b.getY()+10);
   }
 }
 

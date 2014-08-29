@@ -7,7 +7,8 @@ public class VisManager {
   public String[] input;
   public int numLocations;
   public ArrayList<String> states;
-  public int[] ypos;
+  public ArrayList<Float> lastKnownY;
+  public ArrayList<PVector> stateLocs;
 
   public Context conceptOne, conceptTwo, conceptOneIntro, conceptTwoIntro, introScreen;
   public Context context;
@@ -18,7 +19,8 @@ public class VisManager {
 
     numLocations = 0;
     states = new ArrayList<String>();
-    ypos = new int[0];
+    stateLocs = new ArrayList<PVector>();
+    lastKnownY = new ArrayList<Float>();
 
     people = new ArrayList<Person>();
     viewers =new ArrayList<Person>();
@@ -31,7 +33,7 @@ public class VisManager {
       Person tempPerson = new Person(this, input[i]);
       people.add( tempPerson );
 
-      //Creating the viewers array
+      //Creating the viewers array for this person
       if (tempPerson.getSeenUsers().size() > 0) {
         for (String name : tempPerson.getSeenUsers().keySet()) {
 
@@ -48,16 +50,16 @@ public class VisManager {
 
         String tstate = split(tempPerson.location, '$')[1];
         tstate = trim(tstate);
-        if (states.contains(tstate))
-          ypos[states.indexOf(tstate)] ++;
-        else {
+        if (!states.contains(tstate))
+        {
           states.add( tstate );
-          ypos = append(ypos, 1);
+          stateLocs.add( new PVector(tempPerson.geoX, tempPerson.geoY) );
+          lastKnownY.add( 0.0 );
           numLocations++;
         }
       }
     }
-    
+
     //Another loop that removes participant names from the Viewers list
     for (int i=viewers.size()-1; i>=0; i--) {
       Person viewer = viewers.get(i);
@@ -65,8 +67,8 @@ public class VisManager {
         viewers.remove(i);
     }
     //A final loop that sets the Associated person for each viewer
-    for(Person v : viewers){
-       v.associatePerson( people.get(floor(random(people.size()))) ); 
+    for (Person v : viewers) {
+      v.associatePerson( people.get(floor(random(people.size()))) );
     }
 
     //Assign each person their "challenge" person
@@ -91,7 +93,6 @@ public class VisManager {
     //Assign context
     context = introScreen;
 
-    textAlign(LEFT, TOP);
     smooth();
     cursor(loadImage("cross.png"), 8, 8);
   }

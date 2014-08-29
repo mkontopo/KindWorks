@@ -92,8 +92,6 @@ public class DetailState implements State {
       gutter = 20;
       boxWidth = p.imgWidth + (gutter*2);
 
-      if (boxWidth < 200) boxWidth = 200;
-
       text = wordWrap(p.getDescription(), int(p.imgWidth-10));
       textBoxHeight = text.size() * 14;     
 
@@ -109,20 +107,19 @@ public class DetailState implements State {
     public void run() {
       x = p.getX()+30;
       y = p.getY()+20;
-      textFont(Anglecia);
 
       fill(p.getColor());
       noStroke();
       rect(x, y, boxWidth, boxHeight);
 
-
       tint(255);
-      image(p.getImage(), x+gutter, y+gutter, p.imgWidth, imgHeight);
-
+      image(p.getImage(), x+gutter, y+gutter+10, p.imgWidth, imgHeight);
 
       fill(255);
-      float  textY = y+imgHeight+(2*gutter);
+      float  textY = y+imgHeight+(2*gutter)+10;
 
+      textFont(Anglecia);
+      textSize(textSize * 0.9);
       for (String s : text) {
         text(s, x+gutter, textY);
         textY += 14;
@@ -142,7 +139,7 @@ public class DetailState implements State {
         String thisKey = (String)entry.getKey();
         Button b = (Button)entry.getValue();
         if (thisKey.equals("CloseButton")) {
-          b.display(x, y);
+          b.display(x+8, y+8);
         } 
         else if (thisKey.equals("ViewSeenUsersButton")) {
           b.display(x+gutter, y+imgHeight+textBoxHeight+(gutter*3));

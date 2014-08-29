@@ -11,9 +11,11 @@ public class TopMenu implements Menu {
 
     deeds = new Button[5];
     for (int i=0; i<deeds.length; i++) { 
-      deeds[i] = new Button(20, 20, color(255, 0), color(255), Integer.toString(5-i));
+      deeds[i] = new Button(25, 25, color(255, 0), color(255), Integer.toString(5-i));
+      deeds[i].setFontSize(20);
     }
-    showAll = new Button(30, color(255, 0), color(255), "DEEDS");
+    showAll = new Button(25, color(255, 0), color(255), "DEEDS");
+    showAll.setFontSize(20);
   }
   public void display() {
     int c = 0;
@@ -25,7 +27,7 @@ public class TopMenu implements Menu {
     showAll.underlineHighlight(textWidth(showAll.buttonText));
   }
   public void handleClick(float x, float y) {
-    
+
     if (showAll.isOver(x, y)) {
       vm.getContext().setActivePerson(null);
       deedSelection = 0;
@@ -42,21 +44,26 @@ public class TopMenu implements Menu {
     for (Button b : deeds) {
       if (b.isOver(x, y)) {
         vm.getContext().setActivePerson(null);
+        vm.getContext().initPositions();
         //Okay this is the button we clicked.
         //Find the deed number as an int
         int targetDeed = int(b.buttonText);
         deedSelection = targetDeed;
-        println("you clicked " + targetDeed);
+        //println("you clicked " + targetDeed);
 
-        //Now go through every Person based on the people list you got passed in
+        //Now go through every Person based on the people list
         for (Person p : vm.getPeople()) {
           p.addState( "IdleState", p.getIdleState() );
-          p.setLocation(p.getGeoX(), p.getGeoY());
-
+          //p.setLocation(p.getGeoX(), p.getGeoY());
           if (!p.visibleStates.isEmpty() && p.getDeedNumber()!=targetDeed) { 
             p.visibleStates.clear();
+          } 
+          else if (p.getDeedNumber() == targetDeed) {
+            //p.setLocation(findXPos(p.geoX), findXPos(p.geoY));
+            
           }
         }
+        context.setPositions();
       }
     }
   }
@@ -73,7 +80,7 @@ public class TopMenuTwo extends TopMenu {
     super(c);
   }
   public void handleClick(float x, float y) {
-    
+
     if (showAll.isOver(x, y)) {
       vm.getContext().setActivePerson(null);
       deedSelection = 0;
@@ -106,7 +113,7 @@ public class TopMenuTwo extends TopMenu {
         //Find the deed number as an int
         int targetDeed = int(b.buttonText);
         deedSelection = targetDeed;
-        println("you clicked " + targetDeed);
+        //println("you clicked " + targetDeed);
 
         //Now go through every Person based on the people list you got passed in
         for (Person p : vm.getPeople()) {
@@ -126,6 +133,7 @@ public class TopMenuTwo extends TopMenu {
           }
         }
       }
+      
     }
     context.setPositions();
   }

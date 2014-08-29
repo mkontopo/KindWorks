@@ -4,6 +4,7 @@ public interface Context {
   public  void handleClick(float x, float y); 
   public  void handleKey(char k);
   public void setPositions();
+  public void initPositions();
   public void setActivePerson(Person p);
 }
 

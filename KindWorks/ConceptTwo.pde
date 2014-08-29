@@ -12,7 +12,7 @@ public class ConceptTwo implements Context {
   public ConceptTwo(VisManager vm) {
     this.vm = vm;
     activePerson = null;
-    
+
     targetZoom = 1.0;
     zoomFactor = 1.0;
     targetx = 0;
@@ -24,25 +24,26 @@ public class ConceptTwo implements Context {
   }
 
   public void display() {
-    if(start){
+    if (start) {
       initPositions();
       start = false;
     }
-    
+
     background(#2e313c);
 
     fill(#f1f2f2);
     int rs = 100;
     rect(rs, rs, width-(2*rs), height-(2*rs));
 
-    textFont(Anglecia);
-    text("KINDWORKS", width/2-(textWidth("KINDWORKS")/2), 75);
+    textFont(Anglecia_large);
+    text("KINDWORKS", width/2-(textWidth("KINDWORKS")/2), 65);
 
     tint(255);
     image(legend, rs, 20);
 
     fill(#40a4a3);
-    text(deeds[topMenuTwo.getSelection()], width/2-(textWidth(deeds[topMenuTwo.getSelection()])/2), 120);
+    textFont(Anglecia);
+    text(deeds[topMenuTwo.getSelection()], width/2, 120);
 
     if (!vm.getPeople().get(0).isZoomed()) {
       targetZoom = 1.0;
@@ -82,6 +83,11 @@ public class ConceptTwo implements Context {
       fill(activePerson.getColor());
       text(activePerson.getLocation(), width-200, height-100);
     }
+
+//    for (int j=0; j<vm.states.size(); j++) {
+//      fill(255, 0, 0);
+//      ellipse(vm.stateLocs.get(j).x, vm.stateLocs.get(j).y, 8, 8);
+//    }
 
     topMenuTwo.display();
     bottomMenuTwo.display();
@@ -123,100 +129,132 @@ public class ConceptTwo implements Context {
   public ArrayList<Person> getPeople() {
     return vm.people;
   }
-  public float findXPos(float xin) {
-    //Split the screen into n sections
-    int n = 12;
-    float oneCol = width / n;
-    float[] xs = new float[n-1];
-    //init list
-    for (int i=0; i<xs.length; i++) {
-      xs[i] = (i+1) * oneCol;
-    }
-    //search list
-    for (int i=0; i<xs.length; i++) {
-      if (xin - xs[i] < oneCol) {
-        return xs[i];
-      }
-    }
-    return width/2;
-  }
+  int spacer = 25;
   public void initPositions() {
-    for (String state : vm.states) {
-      float ypos = 200;
-      float ypos2 = 200;
+
+
+    for (int j=0; j<vm.states.size(); j++) {
+      String state = vm.states.get(j);
+
+      float xpos = findXPos(vm.stateLocs.get(j).x);
+      //if(xpos == 0) xpos = findXPos(width/2);
+      float ypos = 150;//vm.stateLocs.get(j).y;//constrain((vm.stateLocs.get(j).y) / 5.0, 150, height);
+      float ypos2 = ypos;
+
+
+      for (int k=0; k<j; k++) {
+        if (   abs( findXPos(vm.stateLocs.get(j).x) - findXPos(vm.stateLocs.get(k).x) ) < 5  ) {
+          //println(vm.states.get(j) + " is on top of " + vm.states.get(k) );
+          ypos = vm.lastKnownY.get(k);
+          ypos2 = ypos;
+        }
+      }
+      //println("Starting Y for " + vm.states.get(j) + " = " + ypos);
       for (Person p : vm.getPeople()) {
         String tstate = "";
+        //println("Drawing " + p.getName() + " at " + xpos);
 
         if (p.location.charAt(0) != ('0')) {
           tstate = split(p.location, '$')[1];
           tstate = trim(tstate);
           if (tstate.equals(state) && p.visibleStates.size()>0) {
-            p.initLocation(findXPos(p.geoX), ypos);
+
+            p.initLocation(xpos, ypos);
+            //p.initLocation(findXPos(p.geoX), ypos);
             //p.initLocation(p.geoX, ypos);
-            ypos+=20;
+            ypos+=spacer;
           }
         }
         else {
-          p.initLocation(width/2+random(-200,200), ypos2);
-          ypos2 += 20;
+          p.initLocation(findXPos(width/2), ypos2);
+          ypos2 +=spacer;
         }
       }//end Person for
-      for (Person p : vm.getViewers()) {
+
+        for (Person v : vm.getViewers()) {
         String tstate = "";
 
-        if (p.location.charAt(0) != ('0')) {
-          tstate = split(p.location, '$')[1];
+        if (v.getAssociatedPerson().location.charAt(0) != ('0')) {
+          tstate = split(v.getAssociatedPerson().location, '$')[1];
           tstate = trim(tstate);
-          if (tstate.equals(state) && p.visibleStates.size()>0) {
-            p.initLocation(p.getAssociatedPerson().geoX, ypos);
-            ypos+=20;
+          if (tstate.equals(state) && v.visibleStates.size()>0) {
+            v.initLocation(xpos, ypos);
+            //v.initLocation(findXPos(v.getAssociatedPerson().geoX), ypos);
+            ypos+=spacer;
           }
         }
         else {
-          p.initLocation(width/2, ypos2);
-          ypos2 += 20;
+          //v.initLocation(xpos, ypos2);
+          v.initLocation(findXPos(width/2), ypos2);
+          ypos2 += spacer;
         }
-      }//end Viewers for
+      }//end Viewers for  
+
+        vm.lastKnownY.set(j, ypos);
+      //print("Last known y for " + vm.states.get(j) + " = " + vm.lastKnownY.get(j) + " ...  ");
     }//end state for
   }
 
   public void setPositions() {
-    for (String state : vm.states) {
-      float ypos = 200;
-      float ypos2 = 200;
+    for (int j=0; j<vm.states.size(); j++) {
+      String state = vm.states.get(j);
+
+      float xpos = findXPos(vm.stateLocs.get(j).x);
+      //if(xpos == 0) xpos = findXPos(width/2);
+      float ypos = 150;//vm.stateLocs.get(j).y;//constrain((vm.stateLocs.get(j).y) / 5.0, 150, height);
+      float ypos2 = ypos;
+
+
+      for (int k=0; k<j; k++) {
+        if (   abs( findXPos(vm.stateLocs.get(j).x) - findXPos(vm.stateLocs.get(k).x) ) < 5  ) {
+          //println(vm.states.get(j) + " is on top of " + vm.states.get(k) );
+          ypos = vm.lastKnownY.get(k);
+          ypos2 = ypos;
+        }
+      }
+      //println("Starting Y for " + vm.states.get(j) + " = " + ypos);
       for (Person p : vm.getPeople()) {
         String tstate = "";
+        //println("Drawing " + p.getName() + " at " + xpos);
 
         if (p.location.charAt(0) != ('0')) {
           tstate = split(p.location, '$')[1];
           tstate = trim(tstate);
           if (tstate.equals(state) && p.visibleStates.size()>0) {
-            p.setLocation(findXPos(p.geoX), ypos);
+
+            p.setLocation(xpos, ypos);
+            //p.initLocation(findXPos(p.geoX), ypos);
             //p.initLocation(p.geoX, ypos);
-            ypos+=20;
+            ypos+=spacer;
           }
         }
         else {
-          p.setLocation(width/2, ypos2);
-          ypos2 += 20;
+          p.setLocation(findXPos(width/2), ypos2);
+          ypos2 += spacer;
         }
       }//end Person for
-      for (Person p : vm.getViewers()) {
+
+        for (Person v : vm.getViewers()) {
         String tstate = "";
 
-        if (p.location.charAt(0) != ('0')) {
-          tstate = split(p.location, '$')[1];
+        if (v.getAssociatedPerson().location.charAt(0) != ('0')) {
+          tstate = split(v.getAssociatedPerson().location, '$')[1];
           tstate = trim(tstate);
-          if (tstate.equals(state) && p.visibleStates.size()>0) {
-            p.setLocation(findXPos(p.getAssociatedPerson().getX()), ypos);
-            ypos+=20;
+          if (tstate.equals(state) && v.visibleStates.size()>0) {
+            v.setLocation(xpos, ypos);
+            //v.initLocation(findXPos(v.getAssociatedPerson().geoX), ypos);
+            ypos+=spacer;
           }
         }
         else {
-          p.setLocation(width/2, ypos2);
-          ypos2 += 20;
+          //v.initLocation(xpos, ypos2);
+          v.setLocation(findXPos(width/2), ypos2);
+          ypos2 += spacer;
         }
-      }//end Viewers for
+      }//end Viewers for  
+
+        vm.lastKnownY.set(j, ypos);
+      //print("Last known y for " + vm.states.get(j) + " = " + vm.lastKnownY.get(j) + " ...  ");
     }//end state for
   }
 }
@@ -225,31 +263,69 @@ public class ConceptTwo implements Context {
 
 public class ConceptTwoIntro implements Context {
   VisManager vm;
-  PImage conceptIntro;
   Button conceptOneButton, conceptTwoButton;
+  String[] text;
   String b1, b2;
 
   public ConceptTwoIntro(VisManager vm) {
     this.vm = vm;
-    conceptIntro = loadImage("ConceptTwoIntro.jpg");
+    text = loadStrings("conceptTwo.txt");
 
     b1 = "CONCEPT 1";
     b2 = "CONCEPT 2";
 
-    conceptOneButton = new Button(50, color(#40a4a3), color(255), b1);
-    conceptTwoButton = new Button(50, color(#40a4a3), color(255), b2);
+    conceptOneButton = new Button(150, 50, color(#f1f2f2), color(#40a4a3), b1);
+    conceptTwoButton = new Button(150, 50, color(#f1f2f2), color(#40a4a3), b2);
   }
 
   public void display() {
-    tint(255);
-    image(conceptIntro, 0, 0, width, height);
+    noStroke();
+    //bg colors
+    fill(#40a4a3);
+    rect(0, 0, width, height/2);
+
+    fill(#2e313c);
+    rect(0, height/2, width, height/2);
+
+    fill(#f1f2f2);
+    rect(100, 100, width-200, height-200);
 
 
-    float halfButton = textWidth(b1)/2;
-    conceptOneButton.display(width/2-halfButton, 100);
-    conceptTwoButton.display(width/2-halfButton, 150);
+    fill(240);
+    //title
+    textAlign(CENTER, CENTER);
+    textFont(Anglecia_large);
+    textSize(35);
+    text("KINDWORKS", width/2, 20);   
+
+    //intro text
+    textAlign(CENTER, CENTER);
+    textFont(Dosis_book);
+
+    fill(15);
+    textSize(35);
+    text("CONCEPT 2", width/2, height/2-70);
+
+    textSize(18);
+    ArrayList<String> lines = wordWrap(text[0], width/3);
+    for (int i=0; i<lines.size(); i++) {
+      String s = lines.get(i);
+
+      text(s, width/2, height/2+60+(i*30));
+    }
+
+    fill(#40a4a3);
+    ellipse(width/2, height/2, 10, 10);
+
+    float halfButton = conceptOneButton.w/2;
+    conceptOneButton.display(width/2-halfButton, 50);
+    conceptTwoButton.display(width/2-halfButton, 100);
+    conceptOneButton.drawHighlightBox();
+    conceptTwoButton.drawHighlightBox();
   }
   public void setPositions() {
+  }
+  public void initPositions() {
   }
   public void handleClick(float x, float y) {
     if (conceptOneButton.isOver(x, y)) {
@@ -262,7 +338,7 @@ public class ConceptTwoIntro implements Context {
   public void handleKey(char k) {
     if (key == 'm' || key=='M') {
       vm.setContext( vm.getIntroContext() );
-      for(Person p : vm.getPeople()) p.clearLines();
+      for (Person p : vm.getPeople()) p.clearLines();
     }
   }
   public ArrayList<Person> getPeople() {

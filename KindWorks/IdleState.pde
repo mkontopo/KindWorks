@@ -9,11 +9,10 @@ public class IdleState implements State {
     this.p = p;
     ximg = loadImage("x.png");
     buttonList = new HashMap<String, Button>();
-    //buttonList.put( "NameButton", new Button(textWidth(p.getName()), 15, color(255, 0), p.getColor(), "") );
   }
 
   public void display() {
-    textFont(Anglecia);    
+
     Iterator i = buttonList.entrySet().iterator();
     while (i.hasNext ()) {
       Map.Entry entry = (Map.Entry)i.next();
@@ -22,11 +21,13 @@ public class IdleState implements State {
       if (thisKey.equals("NameButton")) {
         b.display(p.getX(), p.getY());
         b.boxHighlight();
+        fill(p.getColor());
+        textFont(Anglecia);
+        textSize(floor(height / DISPLAY_SCALER)-4);
+        textAlign(LEFT, CENTER);
+        text(p.getName(), p.getX()+10, p.getY()+(b.h/2));
       }
     }
-    fill(p.getColor());
-    textSize(floor(height / DISPLAY_SCALER));
-    text(p.getName(), p.getX(), p.getY());
   }
 
   //inherited methods
@@ -57,7 +58,7 @@ public class IdleState implements State {
 
           if (p.getChallengeNames().size() > 0) {
             String txt = "SEE WHO "+ split(p.getName(), " ")[0].toUpperCase() +" CHALLENGED";
-            p.getDetailState().addButton( "ViewChallengeButton", new Button(30, color(50), color(255), txt)  );
+            p.getDetailState().addButton( "ViewChallengeButton", new Button(textWidth(txt)+20, 30, color(50), color(255), txt)  );
           }
         } 
         else {       

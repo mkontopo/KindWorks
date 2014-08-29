@@ -17,18 +17,16 @@ public class ConceptOne implements Context {
 
     legend = loadImage("key.jpg");
   }
-  public void setPositions() {
-  }
   public void setActivePerson(Person p) {
     activePerson = p;
   }
 
   public void display() {
-    if(start){
+    if (start) {
       initPositions();
       start = false;
     }
-    
+
     background(#40a4a3);
 
     fill(#f1f2f2);
@@ -40,14 +38,15 @@ public class ConceptOne implements Context {
     //      image(map, rs, rs, width-(2*rs), height-(2*rs));
     //    }
 
-    textFont(Anglecia);
-    text("KINDWORKS", width/2-(textWidth("KINDWORKS")/2), 75);
+    textFont(Anglecia_large);
+    text("KINDWORKS", width/2-(textWidth("KINDWORKS")/2), 65);
 
     tint(255);
     image(legend, rs, 20);
 
     fill(#40a4a3);
-    text(deeds[topMenu.getSelection()], width/2-(textWidth(deeds[topMenu.getSelection()])/2), 120);
+    textFont(Anglecia);
+    text(deeds[topMenu.getSelection()], width/2, 120);
 
     for (Person p : vm.people) {
       p.display();
@@ -84,11 +83,14 @@ public class ConceptOne implements Context {
   public Menu getBottomMenu() {
     return bottomMenu;
   }
+  int spacer = 25;
   public void initPositions() {
+
+
     initialLocations = new PVector[vm.getPeople().size()];
 
     int[] ypos = new int[3];
-    int gutter = 200;
+    int gutter = 300;
 
     for (int i=0; i<vm.people.size(); i++) {
       int groupNum = int(split(vm.input[i], ",")[1])-1;
@@ -97,6 +99,34 @@ public class ConceptOne implements Context {
       ypos[groupNum] += (textSize*1.75);
     }
   }
+  public void setPositions() {
+    for (int j=0; j<vm.states.size(); j++) {
+      String state = vm.states.get(j);
+
+      float ypos = vm.stateLocs.get(j).y;
+      float ypos2 = ypos;
+      float xoff=0;
+
+      for (Person p : vm.getPeople()) {
+        String tstate = "";
+
+        if (p.location.charAt(0) != ('0')) {
+          tstate = split(p.location, '$')[1];
+          tstate = trim(tstate);
+          if (tstate.equals(state) && p.visibleStates.size()>0) {
+            p.setLocation(findXPos(p.geoX)+xoff, ypos);
+            ypos+=spacer;
+            xoff+=spacer;
+          }
+        }
+        else {
+          p.setLocation(findXPos(width/2), ypos2);
+          ypos2 += spacer;
+          xoff+=spacer;
+        }
+      }//end Person for
+    }//end state for
+  }
 }
 
 
@@ -104,31 +134,69 @@ public class ConceptOne implements Context {
 public class ConceptOneIntro implements Context {
 
   VisManager vm;
-  PImage conceptIntro;
+  String[] text;
   Button conceptOneButton, conceptTwoButton;
   String b1, b2;
 
   public ConceptOneIntro(VisManager vm) {
     this.vm = vm;
-    conceptIntro = loadImage("ConceptOneIntro.jpg");
+    text = loadStrings("conceptOne.txt");
 
     b1 = "CONCEPT 1";
     b2 = "CONCEPT 2";
 
-    conceptOneButton = new Button(50, color(#40a4a3), color(255), b1);
-    conceptTwoButton = new Button(50, color(#40a4a3), color(255), b2);
+    conceptOneButton = new Button(150, 50, color(#f1f2f2), color(#40a4a3), b1);
+    conceptTwoButton = new Button(150, 50, color(#f1f2f2), color(#40a4a3), b2);
   }
   public void setPositions() {
   }
+  public void initPositions() {
+  }
 
   public void display() {
-    tint(255);
-    image(conceptIntro, 0, 0, width, height);
+    noStroke();
+    //bg colors
+    fill(#40a4a3);
+    rect(0, 0, width, height/2);
+
+    fill(#2e313c);
+    rect(0, height/2, width, height/2);
+
+    fill(#f1f2f2);
+    rect(100, 100, width-200, height-200);
 
 
-    float halfButton = textWidth(b1)/2;
-    conceptOneButton.display(width/2-halfButton, 100);
-    conceptTwoButton.display(width/2-halfButton, 150);
+    fill(240);
+    //title
+    textAlign(CENTER, CENTER);
+    textFont(Anglecia_large);
+    textSize(35);
+    text("KINDWORKS", width/2, 20);   
+
+    //intro text
+    textAlign(CENTER, CENTER);
+    textFont(Dosis_book);
+
+    fill(15);
+    textSize(35);
+    text("CONCEPT 1", width/2, height/2-70);
+
+    textSize(18);
+    ArrayList<String> lines = wordWrap(text[0], width/3);
+    for (int i=0; i<lines.size(); i++) {
+      String s = lines.get(i);
+
+      text(s, width/2, height/2+60+(i*30));
+    }
+
+    fill(#40a4a3);
+    ellipse(width/2, height/2, 10, 10);
+
+    float halfButton = conceptOneButton.w/2;
+    conceptOneButton.display(width/2-halfButton, 50);
+    conceptTwoButton.display(width/2-halfButton, 100);
+    conceptOneButton.drawHighlightBox();
+    conceptTwoButton.drawHighlightBox();
   }
   public void handleClick(float x, float y) {
     if (conceptOneButton.isOver(x, y)) {

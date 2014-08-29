@@ -47,8 +47,10 @@ public class ChallengeStatusState implements State {
     ArrayList<String> words = wordWrap(txt, 150);
     boxHeight = 100 + words.size() * 14;
     fill(p.getColor());
+    noStroke();
     rect(x, y, 200, boxHeight);
     fill(255);
+    textSize(textSize * 0.9);
     for (int i=0; i<words.size(); i++) {
       String s = words.get(i);
       text(s, x+20, y+50+(i*20));

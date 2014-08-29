@@ -65,7 +65,8 @@ public class Person {
     challengeStatusState = new ChallengeStatusState(this);
 
     visibleStates.put("IdleState", idleState);
-    idleState.addButton( "NameButton", new Button(textWidth(name), 15, color(255, 0), col, "") );
+    idleState.addButton( "NameButton", new Button(textWidth(name)+20, 25, color(255, 0), col, "") );
+    //((Button)idleState.getButtonList().get("NameButton")).setFont(Anglecia);
 
     //state = idleState;
   }
@@ -381,6 +382,7 @@ public class Person {
 
 
     imgWidth = img.width / 3;
+    if(imgWidth < 200) imgWidth = 200;
 
     float imgRatio = img.width / imgWidth;
     imgHeight = img.height / imgRatio;
@@ -400,7 +402,7 @@ public class Person {
     case 2: 
       return #ee8c44;
     default:
-      return #cccccc;
+      return #000000;
     }
   }
 }

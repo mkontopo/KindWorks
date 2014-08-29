@@ -9,6 +9,7 @@ public class Button {
   private boolean over;
   private boolean active = false;
   private boolean waiting = false;
+  private float txtsize;
 
   public Button(float h, color col, color txtCol, String txt) {
     this.x = 0;
@@ -22,6 +23,7 @@ public class Button {
     buttonText = txt;
     noStroke();
     alpha = 255;
+    txtsize = 12;
   }
 
 
@@ -37,7 +39,8 @@ public class Button {
 
 
   public void display() {
-    textFont(Dosis_book);
+    //textFont(Dosis_bold);
+    //textSize(ceil(textSize*1.2));
     if (active) drawHighlightBox();
 
     //draw text
@@ -49,10 +52,12 @@ public class Button {
     if (!waiting)
       fill(txtCol, alpha);
     else {
-      fill(txtCol, map(sin(millis()/100.0), -1,1, 50,250));
+      fill(txtCol, map(sin(millis()/100.0), -1, 1, 50, 250));
     }
-    textSize(12);
-    text(buttonText, x+(buttonGutter/2), y+5);
+    textFont(Dosis_bold);
+    textSize(txtsize);
+    textAlign(CENTER, CENTER);
+    text(buttonText, x+(w/2), y+(h/2));
     if (img != null)
       image(img, x, y);
   }
@@ -60,6 +65,9 @@ public class Button {
     this.x = dx;
     this.y = dy;
     display();
+  }
+  public void setFontSize(int sz) {
+    txtsize = sz;
   }
 
   public void boxHighlight() {
@@ -78,8 +86,9 @@ public class Button {
 
   public void underlineHighlight(float len) {
     if (this.isOver(mouseX, mouseY)) {
+      strokeWeight(3);
       stroke(txtCol);
-      line(x+10, y+(textSize*2), x+10+len, y+(textSize*2));
+      line(x+8, y+(textSize*2), x+8+len, y+(textSize*2));
     }
   }
 
@@ -107,14 +116,14 @@ public class Button {
   public boolean isActive() {
     return active;
   }
-  public boolean isWaiting(){
-     return waiting; 
+  public boolean isWaiting() {
+    return waiting;
   }
 
   public void drawHighlightBox() {
     noFill();
     stroke(txtCol);
-    strokeWeight(1);
+    strokeWeight(1.5);
     rect(x, y, w, h);
   }
 }
